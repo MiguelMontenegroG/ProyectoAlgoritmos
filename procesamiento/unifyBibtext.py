@@ -101,8 +101,7 @@ def save_bibtex_file(entries, output_file):
     else:
         print(f"No hay entradas para guardar en {output_file}")
 
-
-if __name__ == "__main__":
+def unificar():
     all_entries = load_bibtex_files(folder_paths)
     print(f"Total de entradas cargadas: {len(all_entries)}")
 
@@ -115,3 +114,6 @@ if __name__ == "__main__":
 
     save_bibtex_file(cleaned_entries, output_cleaned)
     save_bibtex_file(cleaned_duplicates, output_duplicates)
+
+if __name__ == "__main__":
+    unificar()
