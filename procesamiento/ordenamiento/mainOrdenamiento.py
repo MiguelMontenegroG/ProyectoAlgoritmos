@@ -14,9 +14,10 @@ from HeapSort import heap_sort
 from QuickSort import quicksort_inplace
 from bucketSort import bucket_sort
 from pigeonHoleSort import pigeonhole_sort
+from treeSort import tree_sort
 
 
-ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads/IEE/IEEE Xplore Citation BibTeX Download 2025.9.28.19.26.33.bib"
+ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos/downloads/IEEE Xplore Citation BibTeX Download 2025.9.28.9.45.22.bib"
 
 arreglo=[]
 
@@ -50,7 +51,7 @@ def mainOrdenamiento():
         " 1  - TimSort\n"
         " 2  - CombSort\n"
         " 3  - SelectionSort\n"
-        " 4  - (Reservado para futuro método)\n"
+        " 4  - treesort\n"
         " 5  - Pigeonhole Sort\n"
         " 6  - Bucket Sort (con decimales)\n"
         " 7  - QuickSort\n"
@@ -74,9 +75,14 @@ def mainOrdenamiento():
                 comb_sort(arreglo)
                 fin = time.perf_counter()
                 imprimirTiempoEjecucionYArregllo(inicio, fin, arreglo)
-        case "2":
+        case "3":
                 inicio = time.perf_counter()
                 selection_sort(arreglo)
+                fin = time.perf_counter()
+                imprimirTiempoEjecucionYArregllo(inicio, fin, arreglo)
+        case "4":
+                inicio = time.perf_counter()
+                tree_sort(arreglo)
                 fin = time.perf_counter()
                 imprimirTiempoEjecucionYArregllo(inicio, fin, arreglo)
         case "5":
