@@ -4,9 +4,9 @@ import bibtexparser
 
 # Directorios con archivos .bib
 folder_paths = [
-    r"C:\Users\ANGEL\PycharmProjects\ProyectoAlgoritmos\downloads\IEE",
-    r"C:\Users\ANGEL\PycharmProjects\ProyectoAlgoritmos\downloads\sage",
-    r"C:\Users\ANGEL\PycharmProjects\ProyectoAlgoritmos\downloads\science"
+    r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads\IEE",
+    r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads\sage",
+    r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads\science"
 ]
 
 # Carpeta de salida
