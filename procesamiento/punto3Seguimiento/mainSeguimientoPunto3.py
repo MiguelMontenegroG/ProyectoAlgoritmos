@@ -18,7 +18,7 @@ def extraerDatosArchivo():
         autores_raw = entry.get("author", "")
         # Separar respetando que BibTeX usa " and " (con espacios) como separador
         # Usamos regex para evitar problemas con mayúsculas/minúsculas o saltos de línea
-        autores = [a.strip() for a in re.split(r'\s+(?:and)\s+|,', autores_raw) if a.strip()]
+        autores = [a.strip() for a in re.split(r'\s+and\s+', autores_raw) if a.strip()]
         contador_autores.update(autores)
 
     # Ordenar: primero por cantidad (descendente), luego por nombre (ascendente)
