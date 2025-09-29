@@ -1,6 +1,6 @@
 import bibtexparser
 
-ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads/IEE/IEEE Xplore Citation BibTeX Download 2025.9.28.19.26.33.bib"
+ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output/unified_cleaned.bib"
 
 arreglo=[]
 
@@ -13,11 +13,13 @@ def extraerDatosArchivo():
     for entry in bib_database.entries:
         titulo = entry.get('title', '').strip()
         anio = entry.get('year', '').strip()
-        arreglo.append({
-            'tipo': tipo,
-            'titulo': titulo,
-            'año': int(anio) if anio.isdigit() else 0  # Año como entero para ordenamiento
-        })
+        arreglo.append({"titulo": titulo, "año": anio})
+
+def ordenarArreglo():
+    arregloOrdenado = sorted(arreglo, key=lambda x: (x["año"], x["titulo"].lower()))
+    for elemento in arregloOrdenado:
+        print(elemento)
 
 if __name__ == "__main__":
     extraerDatosArchivo()
+    ordenarArreglo()
