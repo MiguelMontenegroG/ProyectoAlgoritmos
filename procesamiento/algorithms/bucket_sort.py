@@ -14,7 +14,7 @@ def bucket_sort(arr):
             index = min(ord(s[0]) % size if s else 0, size - 1)
             buckets[index].append(s)
     else:
-        # Para números
+        # Para números 
         if not all(isinstance(x, (int, float)) for x in arr):
             raise TypeError("Bucket sort requiere elementos numéricos")
             
