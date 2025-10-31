@@ -9,12 +9,7 @@ import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
-from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer
-import nltk
-
-# Descargar recursos de NLTK (solo la primera vez)
-nltk.download('stopwords')
+from sklearn.decomposition import TruncatedSVD
 
 # ========= 1. Extraer abstracts del archivo .bib ==========
 def extraer_abstracts(archivo_bib):
@@ -25,24 +20,17 @@ def extraer_abstracts(archivo_bib):
     return abstracts
 
 
-# ========= 2. Preprocesamiento del texto ==========
-def limpiar_texto(texto):
-    stop_words = set(stopwords.words('english'))  # o 'spanish' si tus abstracts están en español
-    stemmer = SnowballStemmer('english')
-
-    texto = texto.lower()
-    texto = re.sub(r'[^a-záéíóúñü ]', ' ', texto)
-    palabras = [stemmer.stem(p) for p in texto.split() if p not in stop_words]
-    return ' '.join(palabras)
-
-
 # ========= 3. Calcular similitud ==========
 def calcular_similitud(abstracts):
-    vectorizador = TfidfVectorizer()
+    vectorizador = TfidfVectorizer(max_features=1000)
     matriz_tfidf = vectorizador.fit_transform(abstracts)
-    matriz_similitud = cosine_similarity(matriz_tfidf)
-    return matriz_similitud
 
+    # Reducir dimensionalidad
+    svd = TruncatedSVD(n_components=100)
+    matriz_reducida = svd.fit_transform(matriz_tfidf)
+
+    matriz_similitud = cosine_similarity(matriz_reducida)
+    return matriz_similitud
 
 # ========= 4. Aplicar tres métodos de clustering jerárquico ==========
 def clustering_jerarquico(similitud, metodo):
@@ -60,18 +48,20 @@ def mostrar_dendrograma(Z, abstracts, metodo):
     plt.show()
 
 
+
+
 # ========= 6. Ejecución principal ==========
 if __name__ == "__main__":
-    ruta_bib = "articulos.bib"  # cambia por la ruta de tu archivo .bib
+    ruta_bib = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\pruebaR4.bib'  # cambia por la ruta de tu archivo .bib
     abstracts = extraer_abstracts(ruta_bib)
 
     print(f"Se encontraron {len(abstracts)} abstracts.\n")
 
     # Preprocesamiento
-    abstracts_limpios = [limpiar_texto(a) for a in abstracts]
+    #abstracts_limpios = [limpiar_texto(a) for a in abstracts]
 
     # Calcular matriz de similitud
-    similitud = calcular_similitud(abstracts_limpios)
+    similitud = calcular_similitud(abstracts)
 
     # Métodos de clustering jerárquico a comparar
     metodos = ['single', 'complete', 'average']
