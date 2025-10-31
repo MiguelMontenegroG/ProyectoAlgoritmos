@@ -10,7 +10,7 @@ import re
 def fix_notebook_robust():
     """Agrega lógica de recuperación robusta a todas las celdas que usan detailed_results"""
     
-    notebook_path = r"c:\Users\josem\OneDrive\Documentos\GitHub\ProyectoAlgoritmos\Text_Similarity_Analysis.ipynb"
+    notebook_path = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\Text_Similarity_Analysis.ipynb"
     
     with open(notebook_path, 'r', encoding='utf-8') as f:
         notebook = json.load(f)
@@ -37,7 +37,7 @@ if not has_all_algorithms:
                 if len(abstracts) > max(index1, index2):
                     # Importar TextSimilarityAnalyzer
                     import sys
-                    sys.path.insert(0, r'c:\\Users\\josem\\OneDrive\\Documentos\\GitHub\\ProyectoAlgoritmos')
+                    sys.path.insert(0, r'C:\\Users\\NICOLAS PEÑA RINCON\\Documents\\GitHub\\ProyectoAlgoritmos')
                     from src.similarity.text_similarity_analyzer import TextSimilarityAnalyzer
                     
                     analyzer = TextSimilarityAnalyzer(
@@ -59,10 +59,10 @@ if not has_all_algorithms:
                 from bibtexparser.bparser import BibTexParser
                 from bibtexparser.customization import convert_to_unicode
                 
-                sys.path.insert(0, r'c:\\Users\\josem\\OneDrive\\Documentos\\GitHub\\ProyectoAlgoritmos')
+                sys.path.insert(0, r'C:\\Users\\NICOLAS PEÑA RINCON\\Documents\\GitHub\\ProyectoAlgoritmos')
                 from src.similarity.text_similarity_analyzer import TextSimilarityAnalyzer
                 
-                bibtex_path = r'c:\\Users\\josem\\OneDrive\\Documentos\\GitHub\\ProyectoAlgoritmos\\output\\unified_cleaned.bib'
+                bibtex_path = r'C:\\Users\\NICOLAS PEÑA RINCON\\Documents\\GitHub\\ProyectoAlgoritmos\\output\\unified_cleaned.bib'
                 
                 parser = BibTexParser()
                 parser.customization = convert_to_unicode
