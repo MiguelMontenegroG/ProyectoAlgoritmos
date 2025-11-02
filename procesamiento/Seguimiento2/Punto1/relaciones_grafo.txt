@@ -1,0 +1,62 @@
+🔹 [1] Computational, and Theoretical Perspectives
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.854)
+   ➜ [3] and Theoretical Perspectives (peso=0.793)
+   ➜ [5] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=0.350)
+   ➜ [7] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=0.350)
+   ➜ [9] Psychological, and Theoretical Perspectives, me quiero pegar un tiro (peso=0.360)
+
+🔹 [2] Psychological, Computational, and Theoretical Perspectives
+   ➜ [1] Computational, and Theoretical Perspectives (peso=0.854)
+   ➜ [3] and Theoretical Perspectives (peso=0.678)
+   ➜ [4] Natural Languqge Parsing: Psychological, Computational (peso=0.395)
+   ➜ [5] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=0.475)
+   ➜ [6] Natural Languqge Parsing: Psychological, Computational (peso=0.395)
+   ➜ [7] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=0.475)
+   ➜ [9] Psychological, and Theoretical Perspectives, me quiero pegar un tiro (peso=0.488)
+
+🔹 [3] and Theoretical Perspectives
+   ➜ [1] Computational, and Theoretical Perspectives (peso=0.793)
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.678)
+   ➜ [5] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=0.442)
+   ➜ [7] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=0.442)
+   ➜ [9] Psychological, and Theoretical Perspectives, me quiero pegar un tiro (peso=0.453)
+
+🔹 [4] Natural Languqge Parsing: Psychological, Computational
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.395)
+   ➜ [6] Natural Languqge Parsing: Psychological, Computational (peso=1.000)
+   ➜ [8] Natural Languqge Parsing: Computational (peso=0.925)
+
+🔹 [5] Book Review: Natural: Psychological, and Theoretical Perspectives
+   ➜ [1] Computational, and Theoretical Perspectives (peso=0.350)
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.475)
+   ➜ [3] and Theoretical Perspectives (peso=0.442)
+   ➜ [7] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=1.000)
+
+🔹 [6] Natural Languqge Parsing: Psychological, Computational
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.395)
+   ➜ [4] Natural Languqge Parsing: Psychological, Computational (peso=1.000)
+   ➜ [8] Natural Languqge Parsing: Computational (peso=0.925)
+
+🔹 [7] Book Review: Natural: Psychological, and Theoretical Perspectives
+   ➜ [1] Computational, and Theoretical Perspectives (peso=0.350)
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.475)
+   ➜ [3] and Theoretical Perspectives (peso=0.442)
+   ➜ [5] Book Review: Natural: Psychological, and Theoretical Perspectives (peso=1.000)
+
+🔹 [8] Natural Languqge Parsing: Computational
+   ➜ [4] Natural Languqge Parsing: Psychological, Computational (peso=0.925)
+   ➜ [6] Natural Languqge Parsing: Psychological, Computational (peso=0.925)
+
+🔹 [9] Psychological, and Theoretical Perspectives, me quiero pegar un tiro
+   ➜ [1] Computational, and Theoretical Perspectives (peso=0.360)
+   ➜ [2] Psychological, Computational, and Theoretical Perspectives (peso=0.488)
+   ➜ [3] and Theoretical Perspectives (peso=0.453)
+   ➜ [10] Perspectives, me quiero pegar un tiro (peso=0.871)
+
+🔹 [10] Perspectives, me quiero pegar un tiro
+   ➜ [9] Psychological, and Theoretical Perspectives, me quiero pegar un tiro (peso=0.871)
+   ➜ [11] Activities to develop computational thinking contextualized with COVID-19 pandemic: a case study sin embargo,Perspectives, me quiero pegar un tiro (peso=0.380)
+
+🔹 [11] Activities to develop computational thinking contextualized with COVID-19 pandemic: a case study sin embargo,Perspectives, me quiero pegar un tiro
+   ➜ [10] Perspectives, me quiero pegar un tiro (peso=0.380)
+
