@@ -52,7 +52,7 @@ def mostrar_dendrograma(Z, abstracts, metodo):
 
 # ========= 6. Ejecución principal ==========
 if __name__ == "__main__":
-    ruta_bib = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\pruebaR4.bib'  # cambia por la ruta de tu archivo .bib
+    ruta_bib = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\requerimiento4.bib'  # cambia por la ruta de tu archivo .bib
     abstracts = extraer_abstracts(ruta_bib)
 
     print(f"Se encontraron {len(abstracts)} abstracts.\n")

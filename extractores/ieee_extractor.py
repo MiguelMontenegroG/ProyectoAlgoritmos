@@ -222,12 +222,25 @@ def scrape_IEE():
                         bibtex_radio.click()
                     time.sleep(2)
 
-                    # Citation + Abstract
-                    add_abstract = WebDriverWait(driver, 10).until(
-                        EC.element_to_be_clickable((By.XPATH, "//label[contains(., 'Citation and Abstract')]/input"))
-                    )
-                    if not add_abstract.is_selected():
-                        add_abstract.click()
+                    # Citation + Abstract + Index Terms
+                    try:
+                        add_index_terms = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable(
+                                (By.XPATH, "//label[contains(., 'Citation and Abstract and Index Terms')]/input"))
+                        )
+                        if not add_index_terms.is_selected():
+                            add_index_terms.click()
+                        print("✅ Seleccionado: Citation + Abstract + Index Terms")
+                    except TimeoutException:
+                        # Si no encuentra esa opción, intenta usar la de Citation + Abstract normal
+                        print(
+                            "⚠️ No se encontró 'Citation + Abstract + Index Terms', usando solo 'Citation + Abstract'")
+                        add_abstract = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable(
+                                (By.XPATH, "//label[contains(., 'Citation and Abstract')]/input"))
+                        )
+                        if not add_abstract.is_selected():
+                            add_abstract.click()
                     time.sleep(2)
 
                     # Download
