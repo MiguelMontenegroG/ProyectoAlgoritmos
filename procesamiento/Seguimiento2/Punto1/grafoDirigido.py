@@ -70,7 +70,7 @@ def mostrar_y_guardar_grafo(G):
     plt.axis("off")
     plt.tight_layout()
 
-    salida = os.path.join(CARPETA_SALIDA, "grafo_general.png")
+    salida = os.path.join(CARPETA_SALIDA, "grafo_General.png")
     plt.savefig(salida, dpi=300, bbox_inches="tight")
     plt.show()
     print(f"✅ Grafo guardado como {salida}")
@@ -90,6 +90,27 @@ def calcular_caminos_minimos(G):
                     f.write(f"{i} → {j}: distancia mínima = {dist[i][j]:.4f}\n")
     print(f"✅ Caminos mínimos guardados en {salida}")
 
+
+# === MÉTODO OPCIONAL: Imprimir matriz de similitud ===
+def imprimir_matriz_similitud(titulos, matriz):
+    import numpy as np
+    np.set_printoptions(precision=3, suppress=True)
+
+    print("\n📊 MATRIZ DE SIMILITUD ENTRE TÍTULOS:\n")
+
+    # Encabezados numerados
+    encabezado = "     " + "  ".join([f"{i + 1:>4}" for i in range(len(titulos))])
+    print(encabezado)
+    print("     " + "----" * len(titulos))
+
+    # Filas con valores
+    for i, fila in enumerate(matriz):
+        fila_texto = "  ".join([f"{v:>4.2f}" for v in fila])
+        print(f"{i + 1:>3} | {fila_texto}")
+
+    print("\n🔹 Donde los valores cercanos a 1 indican mayor similitud.\n")
+
+
 # === 6️⃣ Ejecutar todo ===
 if __name__ == "__main__":
     titulos = cargar_titulos(ARCHIVO_BIB)
@@ -107,5 +128,9 @@ if __name__ == "__main__":
     print(f"Se encontraron {len(componentes)} componentes fuertemente conexas.")
     for i, comp in enumerate(componentes, 1):
         print(f"Componente {i}: {sorted(comp)}")
+
+    print("A continuacion se muestra la matriz de similitud ")
+    imprimir_matriz_similitud(titulos, matriz)
+
 
 
