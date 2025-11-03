@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-11-02T18:48:05.334230",
+  "sample_size": 3,
+  "max_documents_config": 3,
+  "min_cooccurrence_config": 1,
+  "graph_stats": {
+    "nodes": 54,
+    "edges": 504,
+    "density": 0.3522012578616352,
+    "average_degree": 18.666666666666668
+  },
+  "top_nodes": [
+    [
+      "method",
+      38
+    ],
+    [
+      "approach",
+      38
+    ],
+    [
+      "new",
+      20
+    ],
+    [
+      "present",
+      20
+    ],
+    [
+      "personality",
+      20
+    ],
+    [
+      "uncover",
+      20
+    ],
+    [
+      "structure",
+      20
+    ],
+    [
+      "text",
+      20
+    ],
+    [
+      "two",
+      20
+    ],
+    [
+      "understood",
+      20
+    ]
+  ],
+  "num_components": 2,
+  "clustering_coefficient": 0.2133451683318947
+}

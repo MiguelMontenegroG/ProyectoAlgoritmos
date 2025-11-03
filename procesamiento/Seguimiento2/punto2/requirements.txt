@@ -1,0 +1,31 @@
+# ====================================================
+# Dependencias para Análisis de Grafo de Coocurrencia
+# ====================================================
+
+# CORE - Graph Processing
+networkx>=2.6.0
+
+# Data Processing
+pandas>=1.3.0
+numpy>=1.20.0
+
+# BibTeX Processing
+bibtexparser>=1.3.0
+
+# NLP - Text Processing
+nltk>=3.6.0
+scikit-learn>=1.0.0
+
+# Visualization
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Optional but recommended
+jupyter>=1.0.0
+
+# ====================================================
+# Instalación Rápida:
+#
+# pip install -r requirements.txt
+#
+# ====================================================
