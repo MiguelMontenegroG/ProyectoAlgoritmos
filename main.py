@@ -1,21 +1,21 @@
 import os
-from extractores.ieee_extractor import scrape_IEE
-from extractores.sage_extractor import scrape_sage
-from extractores.sciencedirect_extractor import science_test_debug
+from extractores.ieee_extractor import  mainEjecutable
+#from extractores.sage_extractor import scrape_sage
+from extractores.sciencedirect_extractor import mainEjecutable
 from procesamiento.unifyBibtext import unificar  # renombrar tu función principal a unify_bibtex_main
 
 
 def main():
     # 1. Descargar archivos automáticamente
     print("Descargando archivos de IEEE...")
-    scrape_IEE()
+    mainEjecutable()
 
     print("Descargando archivos de ScienceDirect...")
-    #science_test_debug()
+    mainEjecutable()
 
     # (Si tienes extractores para SAGE, agregar aquí)
 
-    scrape_sage()
+    #scrape_sage()
 
     # 2. Unificar y filtrar los archivos descargados
     print("Unificando y filtrando archivos...")

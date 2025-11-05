@@ -1,4 +1,4 @@
-import os
+"""import os
 import time
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -31,7 +31,7 @@ chrome_options.add_argument("--no-sandbox")
 
 
 def scrape_sage():
-    """Extrae artículos de SAGE, descarga citas en formato BibTeX y recorre varias páginas."""
+    Extrae artículos de SAGE, descarga citas en formato BibTeX y recorre varias páginas.
 
     EMAIL = os.getenv("EMAIL")
     PASSWORD = os.getenv("PASSWORD")
@@ -179,3 +179,4 @@ def scrape_sage():
 
 if __name__ == "__main__":
     scrape_sage()
+"""
