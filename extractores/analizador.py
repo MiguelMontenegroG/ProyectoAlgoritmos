@@ -10,7 +10,7 @@ from collections import Counter
 from string import punctuation
 
 # 🔹 Configuración de rutas
-INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\prueba.bib"
+INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unifed_reducido.bib"
 OUTPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
 
 # 🔹 Configuración NLP
