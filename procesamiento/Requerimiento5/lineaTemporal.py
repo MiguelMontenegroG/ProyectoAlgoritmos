@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 
 # --- CONFIGURACIÓN ---
 INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
+OUTPUT_IMG = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\lineaTemporal.png"
 
 
 def cargar_articulos(bib_path):
-    """Lee el archivo .bib y devuelve una lista de diccionarios con journal, year y title."""
+    """Lee el archivo .bib y devuelve una lista de tuplas (journal, year)."""
     if not os.path.exists(bib_path):
         raise FileNotFoundError(f"No se encontró el archivo: {bib_path}")
 
@@ -16,49 +17,87 @@ def cargar_articulos(bib_path):
 
     articulos = []
     for entry in bib_db.entries:
-        if "journal" in entry and "year" in entry and "title" in entry:
+        if "journal" in entry and "year" in entry:
             try:
                 year = int(entry["year"])
                 journal = entry["journal"]
-                title = entry["title"]
-                articulos.append({"year": year, "journal": journal, "title": title})
+                articulos.append((journal, year))
             except ValueError:
-                # Ignorar años no válidos
+                # Si year no es un número, se ignora el artículo
                 continue
     return articulos
 
 
+import os
+import bibtexparser
+import matplotlib.pyplot as plt
+
+# --- CONFIGURACIÓN ---
+INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
+OUTPUT_IMG = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\lineaTemporal.png"
+
+def cargar_articulos(bib_path):
+    """Lee el archivo .bib y devuelve una lista de tuplas (journal, year)."""
+    if not os.path.exists(bib_path):
+        raise FileNotFoundError(f"No se encontró el archivo: {bib_path}")
+
+    with open(bib_path, encoding="utf-8") as bibfile:
+        bib_db = bibtexparser.load(bibfile)
+
+    articulos = []
+    for entry in bib_db.entries:
+        if "journal" in entry and "year" in entry:
+            try:
+                year = int(entry["year"])
+                journal = entry["journal"]
+                articulos.append((journal, year))
+            except ValueError:
+                continue
+    return articulos
+
 def crear_linea_tiempo(articulos):
-    """Genera un gráfico de línea del tiempo de publicaciones por journal."""
+    """Crea y guarda la línea de tiempo con cuadrícula."""
     if not articulos:
-        print("No se encontraron artículos para graficar.")
+        print("⚠️ No hay artículos para graficar.")
         return
 
-    # Obtener lista única de journals para el eje Y
-    journals = sorted(list({art["journal"] for art in articulos}))
-    journal_to_y = {journal: idx for idx, journal in enumerate(journals)}
+    journals = [a[0] for a in articulos]
+    years = [a[1] for a in articulos]
 
-    # Preparar datos para graficar
-    x = [art["year"] for art in articulos]
-    y = [journal_to_y[art["journal"]] for art in articulos]
-    labels = [art["title"] for art in articulos]
+    journals_unicos = list(sorted(set(journals)))
+    y_map = {journal: i for i, journal in enumerate(journals_unicos)}
 
-    # Crear el gráfico
-    plt.figure(figsize=(14, max(6, len(journals) * 0.5)))
-    plt.scatter(x, y, color='skyblue', s=100, edgecolor='black')
+    plt.figure(figsize=(14, max(6, len(journals_unicos)*0.5)))
 
-    # Etiquetar cada punto con el título (opcional: solo mostrar algunos si son muchos)
-    for i, txt in enumerate(labels):
-        plt.text(x[i], y[i] + 0.1, txt, fontsize=8, rotation=30, ha='left', va='bottom')
+    for i, (journal, year) in enumerate(articulos):
+        plt.scatter(year, y_map[journal], s=100, color='skyblue')
+        plt.text(year, y_map[journal]+0.1, str(i+1), fontsize=8, ha='center', va='bottom')
 
-    # Configurar eje Y
-    plt.yticks(list(journal_to_y.values()), list(journal_to_y.keys()))
+    plt.yticks(range(len(journals_unicos)), journals_unicos, fontsize=8)
     plt.xlabel("Año")
-    plt.ylabel("Revista")
-    plt.title("Línea del tiempo de artículos por año y revista")
-    plt.grid(axis='x', linestyle='--', alpha=0.5)
-    plt.tight_layout()
+    plt.ylabel("Revistas")
+
+    min_year = min(years)
+    max_year = max(years)
+    plt.xlim(min_year - 1, max_year + 1)
+
+    # --- Activar cuadrícula ---
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5, alpha=0.7)
+
+    # Ajuste de márgenes
+    plt.subplots_adjust(left=0.25, right=0.95, top=0.95, bottom=0.15)
+
+    # Guardar imagen
+    plt.savefig(OUTPUT_IMG, dpi=300)
     plt.show()
+    print(f"✅ Línea de tiempo con cuadrícula guardada en: {OUTPUT_IMG}")
+
+def main():
+    articulos = cargar_articulos(INPUT_BIB)
+    crear_linea_tiempo(articulos)
+
+if __name__ == "__main__":
+    main()
 
 
 def main():
