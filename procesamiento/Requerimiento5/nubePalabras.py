@@ -66,10 +66,10 @@ def generar_nube(palabras):
     print(f"📊 Total de palabras clave procesadas: {len(palabras)}")
     print(f"🔠 Palabras únicas: {len(frecuencias)}")
 
-def main():
+def mainNubePalabras():
     print("📚 Generando nube de palabras (ponderada por frecuencia acumulada en keywords)...")
     palabras = cargar_palabras_clave(INPUT_BIB)
     generar_nube(palabras)
 
 if __name__ == "__main__":
-    main()
+    mainNubePalabras()

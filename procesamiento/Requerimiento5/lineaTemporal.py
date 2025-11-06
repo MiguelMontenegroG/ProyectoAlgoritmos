@@ -6,36 +6,6 @@ import matplotlib.pyplot as plt
 INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
 OUTPUT_IMG = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\lineaTemporal.png"
 
-
-def cargar_articulos(bib_path):
-    """Lee el archivo .bib y devuelve una lista de tuplas (journal, year)."""
-    if not os.path.exists(bib_path):
-        raise FileNotFoundError(f"No se encontró el archivo: {bib_path}")
-
-    with open(bib_path, encoding="utf-8") as bibfile:
-        bib_db = bibtexparser.load(bibfile)
-
-    articulos = []
-    for entry in bib_db.entries:
-        if "journal" in entry and "year" in entry:
-            try:
-                year = int(entry["year"])
-                journal = entry["journal"]
-                articulos.append((journal, year))
-            except ValueError:
-                # Si year no es un número, se ignora el artículo
-                continue
-    return articulos
-
-
-import os
-import bibtexparser
-import matplotlib.pyplot as plt
-
-# --- CONFIGURACIÓN ---
-INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
-OUTPUT_IMG = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\lineaTemporal.png"
-
 def cargar_articulos(bib_path):
     """Lee el archivo .bib y devuelve una lista de tuplas (journal, year)."""
     if not os.path.exists(bib_path):
@@ -92,18 +62,10 @@ def crear_linea_tiempo(articulos):
     plt.show()
     print(f"✅ Línea de tiempo con cuadrícula guardada en: {OUTPUT_IMG}")
 
-def main():
+def mainLineaTemporal():
     articulos = cargar_articulos(INPUT_BIB)
     crear_linea_tiempo(articulos)
 
 if __name__ == "__main__":
-    main()
+    mainLineaTemporal()
 
-
-def main():
-    articulos = cargar_articulos(INPUT_BIB)
-    crear_linea_tiempo(articulos)
-
-
-if __name__ == "__main__":
-    main()

@@ -8,7 +8,7 @@ import time
 
 # 🔹 Configuración de rutas
 INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
-OUTPUT_IMG_HEATMAP = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\mapa_calor.png"
+OUTPUT_IMG_HEATMAP = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\mapa_calorGeopsy.png"
 
 # ---------------- FUNCIONES ----------------
 
@@ -79,7 +79,7 @@ def generar_mapa_calor(paises):
     fig.show()
     print(f"✅ Mapa de calor guardado en: {OUTPUT_IMG_HEATMAP}")
 
-def main():
+def mainCalorGeopsy():
     if not os.path.exists(INPUT_BIB):
         print(f"❌ No se encontró el archivo {INPUT_BIB}")
         return
@@ -93,7 +93,7 @@ def main():
             print(articulo)
 
 if __name__ == "__main__":
-    main()
+    mainCalorGeopsy()
 
 
 

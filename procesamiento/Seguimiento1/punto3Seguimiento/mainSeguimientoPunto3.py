@@ -3,7 +3,7 @@ from collections import Counter
 
 import bibtexparser
 
-ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\procesamiento/output/unified_cleaned.bib"
+ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos/output/unified_cleaned.bib"
 
 arreglo=[]
 
@@ -29,5 +29,8 @@ def extraerDatosArchivo():
     for autor, apariciones in top15:
         print(f"{autor}: {apariciones}")
 
-if __name__ == "__main__":
+def seguimiento1Punto3():
     extraerDatosArchivo()
+
+if __name__ == "__main__":
+    seguimiento1Punto3()

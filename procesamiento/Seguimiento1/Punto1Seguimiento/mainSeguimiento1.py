@@ -20,6 +20,9 @@ def ordenarArreglo():
     for elemento in arregloOrdenado:
         print(elemento)
 
-if __name__ == "__main__":
+def mainSeguimiento1():
     extraerDatosArchivo()
     ordenarArreglo()
+
+if __name__ == "__main__":
+    mainSeguimiento1()

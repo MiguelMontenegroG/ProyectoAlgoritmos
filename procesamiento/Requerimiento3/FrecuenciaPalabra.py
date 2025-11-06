@@ -28,11 +28,12 @@ def contar_palabras(abstracts, palabras):
             contador[palabra] += ocurrencias
     return contador
 
-
-if __name__ == "__main__":
+def mainEjecutableRequerimiento3():
     ruta = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_cleaned.bib'  # Cambia por la ruta de tu archivo .bib
-    palabras_objetivo = ["Generative models","Prompting", "Machine learning", "Multimodality", "Fine-tuning", "Training data","Algorithmic bias",
-                         "Explainability","Transparency","Ethics","Privacy","Personalization","Human-AI interaction","AI literacy","Co-creation"]  # Palabras que te interesan
+    palabras_objetivo = ["Generative models", "Prompting", "Machine learning", "Multimodality", "Fine-tuning",
+                         "Training data", "Algorithmic bias",
+                         "Explainability", "Transparency", "Ethics", "Privacy", "Personalization",
+                         "Human-AI interaction", "AI literacy", "Co-creation"]  # Palabras que te interesan
 
     abstracts = extraer_abstracts(ruta)
     print(f"Se encontraron {len(abstracts)} abstracts.")
@@ -41,3 +42,7 @@ if __name__ == "__main__":
     print("\nFrecuencia de palabras:")
     for palabra, freq in frecuencias.most_common():
         print(f"{palabra}: {freq}")
+
+
+if __name__ == "__main__":
+    mainEjecutableRequerimiento3()
