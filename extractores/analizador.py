@@ -8,6 +8,7 @@ import nltk
 from nltk.corpus import stopwords
 from collections import Counter
 from string import punctuation
+from extractores.cargadorAzaroso import mainAzaroso
 
 # 🔹 Configuración de rutas
 INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unifed_reducido.bib"
@@ -90,7 +91,7 @@ def save_bib_entries(entries, path):
 
 # ---------------- PROCESO PRINCIPAL ----------------
 
-def main():
+def mainAnalizador():
     if not os.path.exists(INPUT_BIB):
         print(f"❌ No se encontró el archivo {INPUT_BIB}")
         return
@@ -120,5 +121,6 @@ def main():
     print(f"\n✅ Archivo con metadatos y keywords guardado en:\n{OUTPUT_BIB}")
 
 if __name__ == "__main__":
-    main()
+    mainAzaroso()
+    mainAnalizador()
 

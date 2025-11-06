@@ -47,18 +47,14 @@ def mostrar_dendrograma(Z, abstracts, metodo):
     plt.tight_layout()
     plt.show()
 
-
-
-
-# ========= 6. Ejecución principal ==========
-if __name__ == "__main__":
+def mainRequerimiento4():
     ruta_bib = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\requerimiento4.bib'  # cambia por la ruta de tu archivo .bib
     abstracts = extraer_abstracts(ruta_bib)
 
     print(f"Se encontraron {len(abstracts)} abstracts.\n")
 
     # Preprocesamiento
-    #abstracts_limpios = [limpiar_texto(a) for a in abstracts]
+    # abstracts_limpios = [limpiar_texto(a) for a in abstracts]
 
     # Calcular matriz de similitud
     similitud = calcular_similitud(abstracts)
@@ -75,3 +71,8 @@ if __name__ == "__main__":
         print(f"\nAgrupamiento con método '{metodo}':")
         for i, g in enumerate(grupos, 1):
             print(f"  Abstract {i} → Grupo {g}")
+
+
+# ========= 6. Ejecución principal ==========
+if __name__ == "__main__":
+    mainRequerimiento4()

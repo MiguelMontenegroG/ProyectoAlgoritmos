@@ -50,7 +50,7 @@ def imprimir_articulos_sin_pais(sin_pais):
     for articulo in sin_pais:
         print(articulo)
 
-def main():
+def mainCalorNormal():
     if not os.path.exists(INPUT_BIB):
         print(f"❌ No se encontró el archivo {INPUT_BIB}")
         return
@@ -62,5 +62,5 @@ def main():
         imprimir_articulos_sin_pais(sin_pais)
 
 if __name__ == "__main__":
-    main()
+    mainCalorNormal()
 

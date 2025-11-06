@@ -7,31 +7,42 @@ import sys
 
 def install_packages():
     """Instala todas las dependencias necesarias"""
-    
+
     print("=" * 60)
     print("🔧 INSTALADOR DE DEPENDENCIAS - Proyecto Análisis Textual")
     print("=" * 60)
-    
+
     # Paquetes obligatorios
     required = {
         'pandas': 'Manipulación de datos',
         'scikit-learn': 'Algoritmos de ML',
         'nltk': 'Procesamiento de lenguaje natural',
         'bibtexparser': 'Lectura de archivos BibTeX',
+        'requests': 'Solicitudes HTTP',
+        'tqdm': 'Barras de progreso',
+        'numpy': 'Cálculos numéricos',
+        'matplotlib': 'Gráficas',
+        'reportlab': 'Creación de PDFs',
+        'plotly': 'Visualización interactiva',
+        'geopy': 'Geocodificación de ubicaciones',
+        'pycountry': 'Información de países',
+        'wordcloud': 'Generación de nubes de palabras',
+        'scipy': 'Cálculos científicos',
+        'python-dotenv': 'Cargar variables de entorno',
+        'selenium': 'Automatización de navegadores'
     }
-    
-    # Paquetes opcionales
+
+    # Paquetes opcionales (pueden ser más pesados o específicos)
     optional = {
-        'matplotlib': 'Gráficas y visualización',
-        'seaborn': 'Gráficas estadísticas',
         'transformers': 'Modelos BERT',
         'torch': 'Framework de deep learning',
         'sentence-transformers': 'Sentence-BERT para similitud semántica',
+        'seaborn': 'Gráficas estadísticas'
     }
-    
+
     print("\n📦 [OBLIGATORIOS] Instalando paquetes esenciales...\n")
     for package, description in required.items():
-        print(f"  • {package:<20} ({description})")
+        print(f"  • {package:<25} ({description})")
         try:
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "-U", package],
@@ -41,11 +52,11 @@ def install_packages():
             print(f"    ✓ Instalado correctamente\n")
         except Exception as e:
             print(f"    ❌ Error: {e}\n")
-    
+
     print("\n📊 [OPCIONALES] Paquetes para visualización e IA...\n")
     failed = []
     for package, description in optional.items():
-        print(f"  • {package:<20} ({description})")
+        print(f"  • {package:<25} ({description})")
         try:
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "-U", package],
@@ -56,10 +67,10 @@ def install_packages():
         except Exception as e:
             print(f"    ⚠️  No se instaló: {type(e).__name__}\n")
             failed.append(package)
-    
+
     print("=" * 60)
     print("✅ Instalación completada")
-    
+
     if failed:
         print(f"\n⚠️  {len(failed)} paquete(s) opcional(es) no se instaló(aron):")
         for pkg in failed:
@@ -68,8 +79,9 @@ def install_packages():
         print(f"   pip install {' '.join(failed)}")
     else:
         print("\n🎉 Todos los paquetes se instalaron correctamente")
-    
+
     print("=" * 60)
+
 
 if __name__ == "__main__":
     install_packages()
