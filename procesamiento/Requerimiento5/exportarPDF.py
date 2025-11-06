@@ -1,9 +1,10 @@
+import os
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 def crear_pdf_con_imagenes(imagenes, ruta_salida):
     """
-    Crea un PDF con cada imagen en una página separada.
+    Crea un PDF con cada imagen en una página separada y lo abre automáticamente.
 
     :param imagenes: Lista de rutas a imágenes PNG.
     :param ruta_salida: Ruta completa del PDF de salida.
@@ -17,7 +18,13 @@ def crear_pdf_con_imagenes(imagenes, ruta_salida):
         c.showPage()  # Nueva página para la siguiente imagen
 
     c.save()
-    print(f"PDF creado exitosamente: {ruta_salida}")
+    print(f"✅ PDF creado exitosamente: {ruta_salida}")
+
+    # 🔹 Abrir el PDF automáticamente (solo en Windows)
+    try:
+        os.startfile(ruta_salida)
+    except Exception as e:
+        print(f"No se pudo abrir el PDF automáticamente: {e}")
 
 def mainExportarPDF():
     # Lista de imágenes
