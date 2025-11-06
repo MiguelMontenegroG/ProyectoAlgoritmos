@@ -1,4 +1,3 @@
-import os
 from extractores.ieee_extractor import scrape_IEE
 from procesamiento.Requerimiento4.clutsteringDatos import mainRequerimiento4
 from procesamiento.Requerimiento3.FrecuenciaPalabra import mainEjecutableRequerimiento3
@@ -7,7 +6,10 @@ from procesamiento.Requerimiento5.requerimiento5Ejecutable import mainRequerimie
 from extractores.analizador import mainAnalizador
 from procesamiento.unifyBibtext import unificar  # renombrar tu función principal a unify_bibtex_main
 from procesamiento.install_dependencies import install_packages
-from procesamiento.Requerimiento2.instalarJupyter import mainJupyter
+from instalarJupyter import mainJupyter
+from procesamiento.Seguimiento1.Punto1Seguimiento import mainSeguimiento1
+from procesamiento.Seguimiento1.punto3Seguimiento import mainSeguimientoPunto3
+
 
 def ejecutar_descarga_y_unificacion():
     # 1. Descargar archivos automáticamente
@@ -35,6 +37,12 @@ def contarCantidadPalabrasCategoria():
 def clusterizarDatos():
     mainRequerimiento4()
 
+def seguimiento1Punto1():
+    mainSeguimiento1()
+
+def seguimiento1Punto3():
+    mainSeguimientoPunto3()
+
 
 def requerimiento5():
     print("Seleccione 1 si desea utilizar 100 articulos al azar del fichero unificado. Estos se cargaran al bib simplificado")
@@ -51,14 +59,27 @@ def requerimiento5():
         print("Opción inválida. Por favor ingrese un número del 0 al 2.")
 
 def mostrar_menu():
-    install_packages()
+    while True:
+        print("Seleccione 1 si desea instalar los paquetes necesarios")
+        print("Seleccione 2 para continuar")
+
+        instalarPaquetes=input("Ingrese el número de la opción que desea ejecutar: ").strip()
+        if instalarPaquetes=="1":
+            install_packages()
+        if instalarPaquetes=="2":
+            print("Continuando")
+            break
+        else:
+            print("Opcion invalida, solo puede seleccionar 1 y 2")
     while True:
         print("\n--- Menú Principal ---")
         print("1. Descargar y unificar archivos")
-        print("2. Funcionalidad 2")
+        print("2. Mostrar los algoritmos matematicos")
         print("3. Mostrar palabras asociadas a la categoria. Concepts of Generative AI in Education")
         print("4. Mostrar los dendogramas ligados a los tres algoritmos de agrupamiento de clustering")
-        print("5. Funcionalidad 5")
+        print("5. Mapas de calor, nube de palabras y linea temporal")
+        print("6. Seguimiento 1 punto 1")
+        print("7. Seguimiento 1 punto 3")
         print("0. Salir")
 
         opcion = input("Ingrese el número de la opción que desea ejecutar: ").strip()
@@ -73,6 +94,10 @@ def mostrar_menu():
             clusterizarDatos()
         elif opcion == "5":
             requerimiento5()
+        elif opcion=="6":
+            seguimiento1Punto1()
+        elif opcion=="7":
+            seguimiento1Punto3()
         elif opcion == "0":
             print("Saliendo del programa...")
             break
