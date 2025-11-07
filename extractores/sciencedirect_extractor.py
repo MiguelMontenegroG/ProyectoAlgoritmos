@@ -15,13 +15,17 @@ load_dotenv()
 DOWNLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "..", "downloads", "science_test_debug")
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-chrome_options = Options()
-chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": os.path.abspath(DOWNLOAD_FOLDER),
-    "download.prompt_for_download": False,
-    "download.directory_upgrade": True,
-    "safebrowsing.enabled": True,
-})
+def get_chrome_options():
+    chrome_options = Options()
+    chrome_options.add_experimental_option("prefs", {
+        "download.default_directory": os.path.abspath(DOWNLOAD_FOLDER),
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True,
+    })
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    return chrome_options
 
 
 def save_debug_artifacts(driver, name_prefix="debug"):
@@ -497,12 +501,12 @@ def download_current_page(driver, page_number):
         return False
 
 
-def science_test_debug():
+def science_test_debug(max_pages=None):
     EMAIL = os.getenv("EMAIL")
     PASSWORD = os.getenv("PASSWORD")
     LOGIN_URL = "https://www-sciencedirect-com.crai.referencistas.com/search?qs=computational%20thinking"
 
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=get_chrome_options())
     driver.get(LOGIN_URL)
     time.sleep(5)
 
@@ -545,6 +549,11 @@ def science_test_debug():
         manual_page_counter = 1
 
         while True:
+            # Verificar límite de páginas
+            if max_pages and manual_page_counter > max_pages:
+                print(f"🏁 Límite de {max_pages} páginas alcanzado. Proceso completado.")
+                break
+
             current_page = get_current_page_number(driver)
 
             # Si no detecta bien la página, usar contador manual

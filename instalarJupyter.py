@@ -33,8 +33,8 @@ def ejecutar_jupyter():
     print("🚀 INICIANDO JUPYTER NOTEBOOK EN LA RUTA DEL PROYECTO")
     print("=" * 60)
 
-    # 📍 Ruta fija de tu proyecto
-    project_root = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos"
+    # 📍 Ruta del proyecto (directorio actual)
+    project_root = "."
 
     # Validar que exista
     if not os.path.exists(project_root):

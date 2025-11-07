@@ -33,8 +33,8 @@ def extraer_articulos_aleatorios(input_bib, output_bib, cantidad=100):
     print(f"{cantidad} artículos aleatorios guardados en: {output_bib}")
 
 def mainAzaroso():
-    input_bib = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_cleaned.bib"         # Cambia a tu archivo .bib
-    output_bib = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unifed_reducido.bib" # Archivo de salida
+    input_bib = "../output/unified_cleaned.bib"         # Cambia a tu archivo .bib
+    output_bib = "../output/unifed_reducido.bib" # Archivo de salida
 
     extraer_articulos_aleatorios(input_bib, output_bib, cantidad=100)
 

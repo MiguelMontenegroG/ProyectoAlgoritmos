@@ -11,12 +11,35 @@ from procesamiento.Seguimiento1.punto3Seguimiento import mainSeguimientoPunto3
 
 
 def ejecutar_descarga_y_unificacion():
+    # Preguntar cuántos descargar
+    try:
+        num_ieee = int(input("¿Cuántas páginas descargar de IEEE? (0 para todas): ").strip())
+        if num_ieee < 0:
+            num_ieee = 0
+    except ValueError:
+        num_ieee = 0
+
+    try:
+        num_science = int(input("¿Cuántas páginas descargar de ScienceDirect? (0 para todas): ").strip())
+        if num_science < 0:
+            num_science = 0
+    except ValueError:
+        num_science = 0
+
     # 1. Descargar archivos automáticamente
     print("Descargando archivos de IEEE...")
-    scrape_IEE()
+    scrape_IEE(max_pages=num_ieee if num_ieee > 0 else None)
+
+    # Pequeña pausa para asegurar que Chrome se cierre completamente
+    import time
+    time.sleep(5)
 
     print("Descargando archivos de ScienceDirect...")
-    science_test_debug()  # Descomentar si quieres activar
+    try:
+        science_test_debug(max_pages=num_science if num_science > 0 else None)  # Descomentar si quieres activar
+    except Exception as e:
+        print(f"❌ Error al descargar de ScienceDirect: {e}")
+        print("💡 Posible solución: Actualizar ChromeDriver o verificar que Chrome esté actualizado")
 
     # 2. Unificar y filtrar los archivos descargados
     print("Unificando y filtrando archivos...")

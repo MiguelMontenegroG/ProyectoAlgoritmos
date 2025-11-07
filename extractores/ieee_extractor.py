@@ -17,16 +17,17 @@ DOWNLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "..", "downloads/IEE")
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
-# Configurar Chrome
-chrome_options = Options()
-chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": os.path.abspath(DOWNLOAD_FOLDER),
-    "download.prompt_for_download": False,
-    "download.directory_upgrade": True,
-    "safebrowsing.enabled": True
-})
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--no-sandbox")
+def get_chrome_options():
+    chrome_options = Options()
+    chrome_options.add_experimental_option("prefs", {
+        "download.default_directory": os.path.abspath(DOWNLOAD_FOLDER),
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True
+    })
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    return chrome_options
 
 
 def wait_for_page_load(driver, timeout=10):
@@ -111,12 +112,12 @@ def has_next_page(driver):
         return False, None
 
 
-def scrape_IEE():
+def scrape_IEE(max_pages=None):
     EMAIL = os.getenv("EMAIL")
     PASSWORD = os.getenv("PASSWORD")
     LOGIN_URL = "https://ieeexplore-ieee-org.crai.referencistas.com/search/searchresult.jsp?newsearch=true&queryText=Computational%20thinking"
 
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=get_chrome_options())
     driver.get(LOGIN_URL)
     wait_for_page_load(driver)
 
@@ -182,6 +183,11 @@ def scrape_IEE():
 
     try:
         while True:
+            # Verificar límite de páginas
+            if max_pages and page_number > max_pages:
+                print(f"🏁 Límite de {max_pages} páginas alcanzado. Proceso completado.")
+                break
+
             print(f"📄 Procesando página {page_number}...")
             retry_count = 0
             page_success = False
@@ -293,7 +299,7 @@ def scrape_IEE():
     except Exception as e:
         print(f"❌ Error durante el proceso: {e}")
 
-    print(f"📊 Proceso completado. Se procesaron {page_number} páginas.")
+    print(f"📊 Proceso completado. Se procesaron {page_number - 1} páginas.")
     driver.quit()
 
 

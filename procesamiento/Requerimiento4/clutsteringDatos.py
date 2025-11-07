@@ -3,6 +3,7 @@
 # ================================
 
 import re
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -48,7 +49,7 @@ def mostrar_dendrograma(Z, abstracts, metodo):
     plt.show()
 
 def mainRequerimiento4():
-    ruta_bib = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\requerimiento4.bib'  # cambia por la ruta de tu archivo .bib
+    ruta_bib = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'requerimiento4.bib')
     abstracts = extraer_abstracts(ruta_bib)
 
     print(f"Se encontraron {len(abstracts)} abstracts.\n")

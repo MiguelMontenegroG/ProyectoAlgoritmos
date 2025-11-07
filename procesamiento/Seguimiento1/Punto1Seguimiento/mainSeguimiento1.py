@@ -1,6 +1,7 @@
 import bibtexparser
+import os
 
-ruta = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output/unified_cleaned.bib"
+ruta = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'output', 'unified_cleaned.bib')
 
 arreglo=[]
 

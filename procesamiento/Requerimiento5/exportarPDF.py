@@ -1,5 +1,6 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+import os
 
 def crear_pdf_con_imagenes(imagenes, ruta_salida):
     """
@@ -22,14 +23,14 @@ def crear_pdf_con_imagenes(imagenes, ruta_salida):
 def mainExportarPDF():
     # Lista de imágenes
     imagenes = [
-        r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\lineaTemporal.png",
-        r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\mapa_calor.png",
-        r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\mapa_calorGeopsy.png",
-        r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\nubePalabras.png"
+        os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'lineaTemporal.png'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'mapa_calor.png'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'mapa_calorGeopsy.png'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'nubePalabras.png')
     ]
 
     # PDF de salida
-    pdf_file = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\requerimiento5.pdf"
+    pdf_file = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'requerimiento5.pdf')
 
     # Llamada a la función
     crear_pdf_con_imagenes(imagenes, pdf_file)

@@ -11,8 +11,9 @@ from string import punctuation
 from extractores.cargadorAzaroso import mainAzaroso
 
 # 🔹 Configuración de rutas
-INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unifed_reducido.bib"
-OUTPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+INPUT_BIB = os.path.join(SCRIPT_DIR, "..", "output", "unifed_reducido.bib")
+OUTPUT_BIB = os.path.join(SCRIPT_DIR, "..", "output", "unified_with_metadata.bib")
 
 # 🔹 Configuración NLP
 nltk.download("punkt", quiet=True)

@@ -4,13 +4,13 @@ import bibtexparser
 
 # Directorios con archivos .bib
 folder_paths = [
-    r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads\IEE",
-    r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads\sage",
-    r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\downloads\science"
+    os.path.join(os.path.dirname(__file__), '..', 'downloads', 'IEE'),
+    os.path.join(os.path.dirname(__file__), '..', 'downloads', 'science_test_debug'),
+    os.path.join(os.path.dirname(__file__), '..', 'downloads', 'sage')
 ]
 
 # Carpeta de salida
-output_folder = r"output"
+output_folder = os.path.join(os.path.dirname(__file__), '..', 'output')
 os.makedirs(output_folder, exist_ok=True)
 
 output_cleaned = os.path.join(output_folder, "unified_cleaned.bib")

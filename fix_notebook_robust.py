@@ -10,7 +10,7 @@ import re
 def fix_notebook_robust():
     """Agrega lógica de recuperación robusta a todas las celdas que usan detailed_results"""
     
-    notebook_path = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\Text_Similarity_Analysis.ipynb"
+    notebook_path = "Text_Similarity_Analysis.ipynb"
     
     with open(notebook_path, 'r', encoding='utf-8') as f:
         notebook = json.load(f)

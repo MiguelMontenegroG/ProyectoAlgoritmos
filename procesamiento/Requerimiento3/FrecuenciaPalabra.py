@@ -1,4 +1,5 @@
 import re
+import os
 from collections import Counter
 
 def extraer_abstracts(archivo_bib):
@@ -29,7 +30,7 @@ def contar_palabras(abstracts, palabras):
     return contador
 
 def mainEjecutableRequerimiento3():
-    ruta = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_cleaned.bib'  # Cambia por la ruta de tu archivo .bib
+    ruta = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'unified_cleaned.bib')
     palabras_objetivo = ["Generative models", "Prompting", "Machine learning", "Multimodality", "Fine-tuning",
                          "Training data", "Algorithmic bias",
                          "Explainability", "Transparency", "Ethics", "Privacy", "Personalization",
