@@ -1,15 +1,26 @@
 #!/usr/bin/env python3
 """
-Script para instalar todas las dependencias necesarias del proyecto
+Script para verificar e instalar todas las dependencias necesarias del proyecto.
 """
+
+import importlib
 import subprocess
 import sys
 
+def check_installed(package_name):
+    """Verifica si un paquete está instalado"""
+    try:
+        importlib.import_module(package_name)
+        return True
+    except ImportError:
+        return False
+
+
 def install_packages():
-    """Instala todas las dependencias necesarias"""
+    """Verifica e instala las dependencias necesarias"""
 
     print("=" * 60)
-    print("🔧 INSTALADOR DE DEPENDENCIAS - Proyecto Análisis Textual")
+    print("🔧 VERIFICADOR DE DEPENDENCIAS - Proyecto Análisis Textual")
     print("=" * 60)
 
     # Paquetes obligatorios
@@ -32,7 +43,7 @@ def install_packages():
         'selenium': 'Automatización de navegadores'
     }
 
-    # Paquetes opcionales (pueden ser más pesados o específicos)
+    # Paquetes opcionales
     optional = {
         'transformers': 'Modelos BERT',
         'torch': 'Framework de deep learning',
@@ -40,48 +51,58 @@ def install_packages():
         'seaborn': 'Gráficas estadísticas'
     }
 
-    print("\n📦 [OBLIGATORIOS] Instalando paquetes esenciales...\n")
-    for package, description in required.items():
-        print(f"  • {package:<25} ({description})")
+    # Combinar todos los paquetes que instala el script
+    all_packages = {**required, **optional}
+
+    missing = []
+
+    print("\n📦 Verificando dependencias necesarias...\n")
+
+    # 🔹 Paso 1: verificar cuáles están instaladas
+    for pkg, desc in all_packages.items():
+        # Algunos nombres de módulos difieren del paquete (guiones -> guiones bajos)
+        mod_name = pkg.replace("-", "_")
+        if check_installed(mod_name):
+            print(f"  ✓ {pkg:<25} ✅  ({desc})")
+        else:
+            print(f"  ✗ {pkg:<25} ❌  No instalado ({desc})")
+            missing.append(pkg)
+
+    # 🔹 Paso 2: si todas están instaladas, terminar
+    if not missing:
+        print("\n✅ Todas las dependencias instaladas correctamente.")
+        print("=" * 60)
+        return
+
+    # 🔹 Paso 3: instalar solo las que faltan
+    print("\n⚠️  Se detectaron paquetes faltantes. Instalando...\n")
+    for package in missing:
         try:
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "-U", package],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
-            print(f"    ✓ Instalado correctamente\n")
+            print(f"  ✓ {package} instalado correctamente")
         except Exception as e:
-            print(f"    ❌ Error: {e}\n")
+            print(f"  ❌ No se pudo instalar {package}: {type(e).__name__}")
 
-    print("\n📊 [OPCIONALES] Paquetes para visualización e IA...\n")
-    failed = []
-    for package, description in optional.items():
-        print(f"  • {package:<25} ({description})")
-        try:
-            subprocess.check_call(
-                [sys.executable, "-m", "pip", "install", "-U", package],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
-            )
-            print(f"    ✓ Instalado correctamente\n")
-        except Exception as e:
-            print(f"    ⚠️  No se instaló: {type(e).__name__}\n")
-            failed.append(package)
+    # 🔹 Paso 4: verificar nuevamente después de instalar
+    print("\n🔍 Verificación final...\n")
+    still_missing = [pkg for pkg in missing if not check_installed(pkg.replace("-", "_"))]
 
-    print("=" * 60)
-    print("✅ Instalación completada")
-
-    if failed:
-        print(f"\n⚠️  {len(failed)} paquete(s) opcional(es) no se instaló(aron):")
-        for pkg in failed:
+    if still_missing:
+        print("⚠️  Algunos paquetes no se pudieron instalar:")
+        for pkg in still_missing:
             print(f"   - {pkg}")
         print("\nIntenta instalarlos manualmente:")
-        print(f"   pip install {' '.join(failed)}")
+        print(f"   pip install {' '.join(still_missing)}")
     else:
-        print("\n🎉 Todos los paquetes se instalaron correctamente")
+        print("🎉 Todas las dependencias instaladas correctamente")
 
     print("=" * 60)
 
 
 if __name__ == "__main__":
     install_packages()
+
