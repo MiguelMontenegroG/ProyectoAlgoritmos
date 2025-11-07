@@ -6,8 +6,9 @@ from procesamiento.Requerimiento5.requerimiento5Ejecutable import mainRequerimie
 from extractores.analizador import mainAnalizador
 from procesamiento.unifyBibtext import unificar  # renombrar tu función principal a unify_bibtex_main
 from instalarJupyter import mainJupyter
-from procesamiento.Seguimiento1.Punto1Seguimiento.mainSeguimiento1 import mainSeguimiento1
-from procesamiento.Seguimiento1.punto3Seguimiento.mainSeguimientoPunto3 import seguimiento1Punto3
+from procesamiento.Seguimiento1.Punto1Seguimiento import mainSeguimiento1
+from procesamiento.Seguimiento1.punto3Seguimiento import mainSeguimientoPunto3
+
 
 def ejecutar_descarga_y_unificacion():
     # 1. Descargar archivos automáticamente
@@ -38,8 +39,8 @@ def clusterizarDatos():
 def seguimiento1Punto1():
     mainSeguimiento1()
 
-def seguimiento1Punto3Llamado():
-    seguimiento1Punto3()
+def seguimiento1Punto3():
+    mainSeguimientoPunto3()
 
 
 def requerimiento5():
