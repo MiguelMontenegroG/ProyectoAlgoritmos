@@ -189,7 +189,7 @@ def main():
             break
 
 
-if __name__ == "__main__":
+def ejecutarEjecutar():
     try:
         main()
     except KeyboardInterrupt:
@@ -198,3 +198,6 @@ if __name__ == "__main__":
         print(f"\n❌ Error: {e}")
         import traceback
         traceback.print_exc()
+
+if __name__ == "__main__":
+    ejecutarEjecutar()

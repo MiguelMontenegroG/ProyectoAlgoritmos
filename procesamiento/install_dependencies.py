@@ -26,7 +26,7 @@ def install_packages():
     # Paquetes obligatorios
     required = {
         'pandas': 'Manipulación de datos',
-        'scikit-learn': 'Algoritmos de ML',
+        'sklearn': 'Algoritmos de ML',
         'nltk': 'Procesamiento de lenguaje natural',
         'bibtexparser': 'Lectura de archivos BibTeX',
         'requests': 'Solicitudes HTTP',
@@ -39,7 +39,7 @@ def install_packages():
         'pycountry': 'Información de países',
         'wordcloud': 'Generación de nubes de palabras',
         'scipy': 'Cálculos científicos',
-        'python-dotenv': 'Cargar variables de entorno',
+        'dotenv': 'Cargar variables de entorno',
         'selenium': 'Automatización de navegadores'
     }
 
@@ -51,7 +51,10 @@ def install_packages():
         'seaborn': 'Gráficas estadísticas'
     }
 
-    # Combinar todos los paquetes que instala el script
+    # Paquetes que se deben forzar a reinstalar siempre
+    force_install = ['scikit-learn', 'python-dotenv']
+
+    # Combinar todos los paquetes
     all_packages = {**required, **optional}
 
     missing = []
@@ -60,36 +63,39 @@ def install_packages():
 
     # 🔹 Paso 1: verificar cuáles están instaladas
     for pkg, desc in all_packages.items():
-        # Algunos nombres de módulos difieren del paquete (guiones -> guiones bajos)
         mod_name = pkg.replace("-", "_")
+
+        # Forzar reinstalación incluso si ya está instalado
+        if pkg in force_install:
+            print(f"  ↻ {pkg:<25} 🔄  Reinstalación forzada ({desc})")
+            missing.append(pkg)
+            continue
+
         if check_installed(mod_name):
             print(f"  ✓ {pkg:<25} ✅  ({desc})")
         else:
             print(f"  ✗ {pkg:<25} ❌  No instalado ({desc})")
             missing.append(pkg)
 
-    # 🔹 Paso 2: si todas están instaladas, terminar
-    if not missing:
-        print("\n✅ Todas las dependencias instaladas correctamente.")
-        print("=" * 60)
-        return
+    # 🔹 Paso 2: instalar los paquetes faltantes o forzados
+    if missing:
+        print("\n⚠️  Instalando paquetes faltantes o forzados...\n")
+        for package in missing:
+            try:
+                subprocess.check_call(
+                    [sys.executable, "-m", "pip", "install", "--force-reinstall", "-U", package],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+                print(f"  ✓ {package} instalado correctamente")
+            except Exception as e:
+                print(f"  ❌ No se pudo instalar {package}: {type(e).__name__}")
+    else:
+        print("\n✅ Todas las dependencias estaban ya instaladas correctamente.")
 
-    # 🔹 Paso 3: instalar solo las que faltan
-    print("\n⚠️  Se detectaron paquetes faltantes. Instalando...\n")
-    for package in missing:
-        try:
-            subprocess.check_call(
-                [sys.executable, "-m", "pip", "install", "-U", package],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
-            )
-            print(f"  ✓ {package} instalado correctamente")
-        except Exception as e:
-            print(f"  ❌ No se pudo instalar {package}: {type(e).__name__}")
-
-    # 🔹 Paso 4: verificar nuevamente después de instalar
+    # 🔹 Paso 3: verificación final
     print("\n🔍 Verificación final...\n")
-    still_missing = [pkg for pkg in missing if not check_installed(pkg.replace("-", "_"))]
+    still_missing = [pkg for pkg in all_packages if not check_installed(pkg.replace("-", "_"))]
 
     if still_missing:
         print("⚠️  Algunos paquetes no se pudieron instalar:")
@@ -105,4 +111,5 @@ def install_packages():
 
 if __name__ == "__main__":
     install_packages()
+
 

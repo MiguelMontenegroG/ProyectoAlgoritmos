@@ -110,9 +110,7 @@ def imprimir_matriz_similitud(titulos, matriz):
 
     print("\n🔹 Donde los valores cercanos a 1 indican mayor similitud.\n")
 
-
-# === 6️⃣ Ejecutar todo ===
-if __name__ == "__main__":
+def ejecutarGrafoDirigido():
     titulos = cargar_titulos(ARCHIVO_BIB)
     matriz = calcular_similitudes(titulos)
     G = construir_grafo(titulos, matriz, umbral=UMBRAL_SIMILITUD)
@@ -131,6 +129,11 @@ if __name__ == "__main__":
 
     print("A continuacion se muestra la matriz de similitud ")
     imprimir_matriz_similitud(titulos, matriz)
+
+
+# === 6️⃣ Ejecutar todo ===
+if __name__ == "__main__":
+    ejecutarGrafoDirigido()
 
 
 

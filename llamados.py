@@ -6,8 +6,11 @@ from procesamiento.Requerimiento5.requerimiento5Ejecutable import mainRequerimie
 from extractores.analizador import mainAnalizador
 from procesamiento.unifyBibtext import unificar  # renombrar tu función principal a unify_bibtex_main
 from instalarJupyter import mainJupyter
-from procesamiento.Seguimiento1.Punto1Seguimiento import mainSeguimiento1
-from procesamiento.Seguimiento1.punto3Seguimiento import mainSeguimientoPunto3
+from procesamiento.Seguimiento1.Punto1Seguimiento.mainSeguimiento1 import mainSeguimiento1
+from procesamiento.Seguimiento1.punto3Seguimiento.mainSeguimientoPunto3 import seguimiento1Punto3
+from procesamiento.Seguimiento2.Punto1.grafoDirigido import ejecutarGrafoDirigido
+from procesamiento.Seguimiento2.punto2.ejecutar import ejecutarEjecutar
+
 
 
 def ejecutar_descarga_y_unificacion():
@@ -62,8 +65,11 @@ def clusterizarDatos():
 def seguimiento1Punto1():
     mainSeguimiento1()
 
-def seguimiento1Punto3():
-    mainSeguimientoPunto3()
+def seguimiento1Punto3Llamado():
+    seguimiento1Punto3()
+
+def ejecutraSegue2Punto2():
+    ejecutarEjecutar()
 
 
 def requerimiento5():
@@ -80,6 +86,9 @@ def requerimiento5():
     else:
         print("Opción inválida. Por favor ingrese un número del 0 al 2.")
 
+def ejecutarGrafoDirigidoLLamado():
+    ejecutarGrafoDirigido()
+
 def mostrar_menu():
     while True:
         print("\n--- Menú Principal ---")
@@ -90,6 +99,8 @@ def mostrar_menu():
         print("5. Mapas de calor, nube de palabras y linea temporal")
         print("6. Seguimiento 1 punto 1")
         print("7. Seguimiento 1 punto 3")
+        print("8. Seguimiento 2 punto 1")
+        print("9. Seguimeinto 2 punto 2")
         print("0. Salir")
 
         opcion = input("Ingrese el número de la opción que desea ejecutar: ").strip()
@@ -107,7 +118,11 @@ def mostrar_menu():
         elif opcion=="6":
             seguimiento1Punto1()
         elif opcion=="7":
-            seguimiento1Punto3()
+            seguimiento1Punto3Llamado()
+        elif opcion=="8":
+            ejecutarGrafoDirigidoLLamado()
+        elif opcion=="9":
+            ejecutraSegue2Punto2()
         elif opcion == "0":
             print("Saliendo del programa...")
             break
