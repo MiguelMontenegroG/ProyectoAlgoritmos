@@ -17,14 +17,25 @@ os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 def get_chrome_options():
     chrome_options = Options()
+
+    # Configuración para Docker/headless
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--disable-web-security")
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--disable-features=VizDisplayCompositor")
+
     chrome_options.add_experimental_option("prefs", {
         "download.default_directory": os.path.abspath(DOWNLOAD_FOLDER),
         "download.prompt_for_download": False,
         "download.directory_upgrade": True,
         "safebrowsing.enabled": True,
     })
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--no-sandbox")
+
     return chrome_options
 
 

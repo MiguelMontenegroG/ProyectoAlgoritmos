@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-11-08T02:22:38.595672",
+  "sample_size": 100,
+  "max_documents_config": 100,
+  "min_cooccurrence_config": 1,
+  "graph_stats": {
+    "nodes": 1782,
+    "edges": 146853,
+    "density": 0.09254249400234801,
+    "average_degree": 164.8181818181818
+  },
+  "top_nodes": [
+    [
+      "thinking",
+      1750
+    ],
+    [
+      "computational",
+      1690
+    ],
+    [
+      "student",
+      1407
+    ],
+    [
+      "skill",
+      1383
+    ],
+    [
+      "study",
+      1297
+    ],
+    [
+      "learning",
+      1267
+    ],
+    [
+      "education",
+      1158
+    ],
+    [
+      "research",
+      1153
+    ],
+    [
+      "result",
+      1123
+    ],
+    [
+      "programming",
+      1055
+    ]
+  ],
+  "num_components": 1,
+  "clustering_coefficient": 0.001663164347789535
+}

@@ -23,7 +23,7 @@ from datetime import datetime
 
 
 # ⚙️ CONFIGURACIÓN - MODIFICA AQUÍ PARA DIFERENTES ANÁLISIS
-MAX_DOCUMENTS = 25  # Número de documentos a procesar (reduce si quieres más rápido)
+MAX_DOCUMENTS = 100  # Número de documentos a procesar (análisis rápido estándar)
 MIN_COOCCURRENCE = 1  # Mínimo de coocurrencias (aumenta para menos ruido)
 # ════════════════════════════════════════════════════════════
 
@@ -71,9 +71,26 @@ def main():
     
     start_time = time.time()
     
-    # Rutas
-    bibtex_file = r'C:\Users\ANGEL\Documents\GitHub\ProyectoAlgoritmos\output\unified_cleaned.bib'
-    output_dir = Path(__file__).parent / 'output'
+    # Rutas - buscar archivo BibTeX automáticamente
+    possible_bib_files = [
+        Path(__file__).parent.parent.parent.parent / 'output' / 'unified_cleaned.bib',
+        Path(__file__).parent.parent.parent.parent / 'output' / 'unifed_reducido.bib',
+        Path(__file__).parent.parent.parent.parent / 'output' / 'unified_with_metadata.bib',
+        Path(r'C:\Users\ANGEL\Documents\GitHub\ProyectoAlgoritmos\output\unified_cleaned.bib')  # fallback
+    ]
+
+    bibtex_file = None
+    for bib_path in possible_bib_files:
+        if bib_path.exists():
+            bibtex_file = str(bib_path)
+            break
+
+    if bibtex_file is None:
+        print("❌ No se encontró archivo BibTeX. Ejecute primero 'Descargar y Unificar Datos'")
+        return
+
+    # Guardar imágenes en el directorio output principal del proyecto para que la web app las encuentre
+    output_dir = Path(__file__).parent.parent.parent.parent / 'output'
     output_dir.mkdir(exist_ok=True)
     
     # 1. Cargar abstracts
