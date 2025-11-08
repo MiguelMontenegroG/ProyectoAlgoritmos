@@ -13,7 +13,7 @@ services:
       - DISPLAY=:99
     ports:
       - "8000:8000"
-    command: ["python", "main.py"]
+    command: ["python", "web_app.py"]
     restart: unless-stopped
 
   # Servicio opcional para Jupyter Notebook

@@ -48,5 +48,5 @@ ENV DISPLAY=:99
 # Exponer puerto (si es necesario para web interface)
 EXPOSE 8000
 
-# Comando por defecto
-CMD ["python", "main.py"]
+# Comando por defecto - aplicación web
+CMD ["python", "web_app.py"]

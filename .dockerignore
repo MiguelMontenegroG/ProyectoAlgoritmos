@@ -1,0 +1,45 @@
+# Archivos y directorios a ignorar en Docker
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/
+.gitignore
+README.md
+.env
+.env.local
+.env.production
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos específicos del proyecto
+.ipynb_checkpoints/
+*.ipynb
+output/*.pdf
+logs/*.log
+temp/
+tmp/
+
+# Archivos de desarrollo
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
