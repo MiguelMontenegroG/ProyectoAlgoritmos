@@ -23,7 +23,7 @@ from datetime import datetime
 
 
 # ⚙️ CONFIGURACIÓN - MODIFICA AQUÍ PARA DIFERENTES ANÁLISIS
-MAX_DOCUMENTS = 100  # Número de documentos a procesar (reduce si quieres más rápido)
+MAX_DOCUMENTS = 25  # Número de documentos a procesar (reduce si quieres más rápido)
 MIN_COOCCURRENCE = 1  # Mínimo de coocurrencias (aumenta para menos ruido)
 # ════════════════════════════════════════════════════════════
 

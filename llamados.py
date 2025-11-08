@@ -1,6 +1,7 @@
 from extractores.ieee_extractor import scrape_IEE
 from procesamiento.Requerimiento4.clutsteringDatos import mainRequerimiento4
 from procesamiento.Requerimiento3.FrecuenciaPalabra import mainEjecutableRequerimiento3
+from procesamiento.Requerimiento2.requerimiento2Ejecutable import mainRequerimiento2
 from extractores.sciencedirect_extractor import science_test_debug
 from procesamiento.Requerimiento5.requerimiento5Ejecutable import mainRequerimiento5
 from extractores.analizador import mainAnalizador
@@ -52,7 +53,43 @@ def ejecutar_descarga_y_unificacion():
 
 
 def jupyterNotebook():
-    mainJupyter()
+    """Menú para seleccionar entre Jupyter Notebook o Análisis de Similitud Textual"""
+    while True:
+        print("\n" + "=" * 60)
+        print("📊 HERRAMIENTAS DE ANÁLISIS".center(60))
+        print("=" * 60)
+        print("1️⃣  Jupyter Notebook")
+        print("    ➤ Entorno interactivo completo con explicaciones detalladas\n")
+        print("2️⃣  Análisis de Similitud Textual (Script)")
+        print("    ➤ Análisis rápido de 6 algoritmos con interfaz simplificada\n")
+        print("0️⃣  Volver al menú principal\n")
+        print("-" * 60)
+
+        opcion = input("👉 Seleccione la herramienta de análisis (0-2): ").strip()
+
+        if opcion == "1":
+            print("\n🔬 Iniciando Jupyter Notebook...")
+            print("💡 Si no se abre automáticamente, copie la URL que aparecerá abajo")
+            mainJupyter()
+
+        elif opcion == "2":
+            print("\n🎯 Iniciando Análisis de Similitud Textual...")
+            try:
+                similitudTextual()
+            except Exception as e:
+                print(f"❌ Error al ejecutar el análisis: {e}")
+                print("💡 Verifique que todas las dependencias estén instaladas")
+
+        elif opcion == "0":
+            print("\n⬅️  Volviendo al menú principal...")
+            break
+
+        else:
+            print("\n⚠️  Opción inválida. Por favor ingrese 0, 1 o 2.")
+
+        # Pausa después de cada acción
+        if opcion in ["1", "2"]:
+            input("\n⏸️  Presione Enter para continuar...")
 
 
 def contarCantidadPalabrasCategoria():
@@ -61,6 +98,9 @@ def contarCantidadPalabrasCategoria():
 
 def clusterizarDatos():
     mainRequerimiento4()
+
+def similitudTextual():
+    mainRequerimiento2()
 
 def seguimiento1Punto1():
     mainSeguimiento1()
@@ -113,28 +153,31 @@ def mostrar_menu():
         print("1️⃣  Descargar y unificar archivos")
         print("    ➤ Descarga los conjuntos de datos y genera el fichero unificado.\n")
 
-        print("2️⃣  Mostrar los algoritmos matemáticos")
-        print("    ➤ Abre un entorno Jupyter con explicaciones y ejecuciones.\n")
+        print("2️⃣  Herramientas de análisis")
+        print("    ➤ Jupyter Notebook o Análisis de Similitud Textual interactivo.\n")
 
         print("3️⃣  Palabras asociadas a la categoría 'Generative AI in Education'")
         print("    ➤ Analiza la frecuencia y relación de conceptos dentro de la categoría.\n")
 
-        print("4️⃣  Dendogramas de los algoritmos de clustering")
+        print("4️⃣  Análisis de similitud textual")
+        print("    ➤ Compara abstracts usando 6 algoritmos de similitud (4 clásicos + 2 IA).\n")
+
+        print("5️⃣  Dendogramas de los algoritmos de clustering")
         print("    ➤ Visualiza los dendrogramas de los tres métodos de agrupamiento.\n")
 
-        print("5️⃣  Mapas de calor, nube de palabras y línea temporal")
+        print("6️⃣  Mapas de calor, nube de palabras y línea temporal")
         print("    ➤ Genera visualizaciones avanzadas del análisis textual.\n")
 
-        print("6️⃣  Seguimiento 1 - Punto 1")
+        print("7️⃣  Seguimiento 1 - Punto 1")
         print("    ➤ Ejecuta el análisis correspondiente al seguimiento 1 punto 1.\n")
 
-        print("7️⃣  Seguimiento 1 - Punto 3")
+        print("8️⃣  Seguimiento 1 - Punto 3")
         print("    ➤ Ejecuta el análisis correspondiente al seguimiento 1 punto 3.\n")
 
-        print("8️⃣  Seguimiento 2 - Punto 1")
+        print("9️⃣  Seguimiento 2 - Punto 1")
         print("    ➤ Ejecuta el algoritmo relacionado al seguimiento 2 punto 1.\n")
 
-        print("9️⃣  Seguimiento 2 - Punto 2")
+        print("10️⃣ Seguimiento 2 - Punto 2")
         print("    ➤ Ejecuta el algoritmo relacionado al seguimiento 2 punto 2.\n")
 
         print("0️⃣  Salir del programa\n")
@@ -152,21 +195,24 @@ def mostrar_menu():
             contarCantidadPalabrasCategoria()
 
         elif opcion == "4":
-            clusterizarDatos()
+            similitudTextual()
 
         elif opcion == "5":
-            requerimiento5()
+            clusterizarDatos()
 
         elif opcion == "6":
-            seguimiento1Punto1()
+            requerimiento5()
 
         elif opcion == "7":
-            seguimiento1Punto3Llamado()
+            seguimiento1Punto1()
 
         elif opcion == "8":
-            ejecutarGrafoDirigidoLLamado()
+            seguimiento1Punto3Llamado()
 
         elif opcion == "9":
+            ejecutarGrafoDirigidoLLamado()
+
+        elif opcion == "10":
             ejecutraSegue2Punto2()
 
         elif opcion == "0":
@@ -174,7 +220,7 @@ def mostrar_menu():
             break
 
         else:
-            print("\n⚠️  Opción inválida. Por favor ingrese un número del 0 al 9.")
+            print("\n⚠️  Opción inválida. Por favor ingrese un número del 0 al 10.")
 
 if __name__ == "__main__":
     mostrar_menu()

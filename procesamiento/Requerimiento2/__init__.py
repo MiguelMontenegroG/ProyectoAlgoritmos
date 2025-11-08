@@ -1,0 +1,1 @@
+# Requerimiento 2: Análisis de Similitud Textual

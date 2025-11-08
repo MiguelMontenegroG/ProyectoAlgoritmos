@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  bibliometric-analysis:
+    build: .
+    container_name: bibliometric-analysis
+    volumes:
+      - .:/app
+      - ./output:/app/output
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - DISPLAY=:99
+    ports:
+      - "8000:8000"
+    command: ["python", "main.py"]
+    restart: unless-stopped
+
+  # Servicio opcional para Jupyter Notebook
+  jupyter:
+    build: .
+    container_name: bibliometric-jupyter
+    volumes:
+      - .:/app
+      - ./output:/app/output
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+    ports:
+      - "8888:8888"
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+    restart: unless-stopped
+    profiles:
+      - jupyter

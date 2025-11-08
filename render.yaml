@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: bibliometric-analysis
+    runtime: python3
+    buildCommand: "pip install -r requirements.txt && python procesamiento/install_dependencies.py"
+    startCommand: "python main.py"
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: RENDER
+        value: "true"
+    disk:
+      name: bibliometric-data
+      mountPath: /opt/render/project/output
+      sizeGB: 10
+
+  - type: web
+    name: bibliometric-jupyter
+    runtime: python3
+    buildCommand: "pip install -r requirements.txt && python procesamiento/install_dependencies.py"
+    startCommand: "jupyter notebook --ip=0.0.0.0 --port=$PORT --no-browser --allow-root"
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: JUPYTER_TOKEN
+        generateValue: true
+    disk:
+      name: jupyter-data
+      mountPath: /opt/render/project/output
+      sizeGB: 10

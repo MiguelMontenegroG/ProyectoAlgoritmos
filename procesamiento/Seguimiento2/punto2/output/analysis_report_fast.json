@@ -1,56 +1,56 @@
 {
-  "timestamp": "2025-11-02T18:48:05.334230",
-  "sample_size": 3,
-  "max_documents_config": 3,
+  "timestamp": "2025-11-07T20:57:18.065612",
+  "sample_size": 25,
+  "max_documents_config": 25,
   "min_cooccurrence_config": 1,
   "graph_stats": {
-    "nodes": 54,
-    "edges": 504,
-    "density": 0.3522012578616352,
-    "average_degree": 18.666666666666668
+    "nodes": 375,
+    "edges": 4570,
+    "density": 0.06516934046345811,
+    "average_degree": 24.373333333333335
   },
   "top_nodes": [
     [
-      "method",
-      38
+      "paper",
+      167
+    ],
+    [
+      "computational",
+      151
+    ],
+    [
+      "model",
+      115
+    ],
+    [
+      "using",
+      94
     ],
     [
       "approach",
-      38
+      94
     ],
     [
-      "new",
-      20
+      "based",
+      92
     ],
     [
-      "present",
-      20
+      "system",
+      83
     ],
     [
-      "personality",
-      20
-    ],
-    [
-      "uncover",
-      20
-    ],
-    [
-      "structure",
-      20
-    ],
-    [
-      "text",
-      20
+      "method",
+      76
     ],
     [
       "two",
-      20
+      71
     ],
     [
-      "understood",
-      20
+      "psychological",
+      68
     ]
   ],
-  "num_components": 2,
-  "clustering_coefficient": 0.2133451683318947
+  "num_components": 1,
+  "clustering_coefficient": 0.15288933483791106
 }
