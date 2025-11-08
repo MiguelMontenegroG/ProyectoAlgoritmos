@@ -73,62 +73,108 @@ def ejecutraSegue2Punto2():
 
 
 def requerimiento5():
-    print("Seleccione 1 si desea utilizar 100 articulos al azar del fichero unificado. Estos se cargaran al bib simplificado")
-    print("Seleccione 2 si desea utilizar los articulos que ya estan cargados en el fichero simplificado")
-    opcion = input("Ingrese el número de la opción que desea ejecutar: ").strip()
+    while True:
+        print("\n" + "=" * 60)
+        print("📚 MENÚ PRINCIPAL - Análisis de Artículos".center(60))
+        print("=" * 60)
+        print("1️⃣  Utilizar 100 artículos aleatorios del fichero unificado")
+        print("    ➤ Se generará un nuevo fichero simplificado con la muestra seleccionada.\n")
+        print("2️⃣  Utilizar los artículos ya cargados en el fichero simplificado")
+        print("    ➤ Se procesarán los datos existentes sin generar una nueva muestra.\n")
+        print("0️⃣  Salir del programa\n")
+        print("-" * 60)
 
-    if opcion == "1":
-        mainAnalizador()
-    elif opcion =="2":
-        mainRequerimiento5()
-    elif opcion=="0":
-        print("Saliendo del programa...")
-    else:
-        print("Opción inválida. Por favor ingrese un número del 0 al 2.")
+        opcion = input("👉 Ingrese el número de la opción que desea ejecutar (0, 1 o 2): ").strip()
+
+        if opcion == "1":
+            print("\n🔄 Ejecutando analizador con muestra aleatoria...")
+            mainAnalizador()
+
+        elif opcion == "2":
+            print("\n📊 Ejecutando requerimiento con datos existentes...")
+            mainRequerimiento5()
+
+        elif opcion == "0":
+            print("\n👋 Saliendo del programa... ¡Hasta luego!")
+            break
+
+        else:
+            print("\n⚠️  Opción inválida. Por favor ingrese un número del 0 al 2.")
 
 def ejecutarGrafoDirigidoLLamado():
     ejecutarGrafoDirigido()
 
 def mostrar_menu():
     while True:
-        print("\n--- Menú Principal ---")
-        print("1. Descargar y unificar archivos")
-        print("2. Mostrar los algoritmos matematicos")
-        print("3. Mostrar palabras asociadas a la categoria. Concepts of Generative AI in Education")
-        print("4. Mostrar los dendogramas ligados a los tres algoritmos de agrupamiento de clustering")
-        print("5. Mapas de calor, nube de palabras y linea temporal")
-        print("6. Seguimiento 1 punto 1")
-        print("7. Seguimiento 1 punto 3")
-        print("8. Seguimiento 2 punto 1")
-        print("9. Seguimeinto 2 punto 2")
-        print("0. Salir")
+        print("\n" + "=" * 70)
+        print("📌 MENÚ PRINCIPAL - PROYECTO ANÁLISIS DE ARTÍCULOS".center(70))
+        print("=" * 70)
 
-        opcion = input("Ingrese el número de la opción que desea ejecutar: ").strip()
+        print("1️⃣  Descargar y unificar archivos")
+        print("    ➤ Descarga los conjuntos de datos y genera el fichero unificado.\n")
+
+        print("2️⃣  Mostrar los algoritmos matemáticos")
+        print("    ➤ Abre un entorno Jupyter con explicaciones y ejecuciones.\n")
+
+        print("3️⃣  Palabras asociadas a la categoría 'Generative AI in Education'")
+        print("    ➤ Analiza la frecuencia y relación de conceptos dentro de la categoría.\n")
+
+        print("4️⃣  Dendogramas de los algoritmos de clustering")
+        print("    ➤ Visualiza los dendrogramas de los tres métodos de agrupamiento.\n")
+
+        print("5️⃣  Mapas de calor, nube de palabras y línea temporal")
+        print("    ➤ Genera visualizaciones avanzadas del análisis textual.\n")
+
+        print("6️⃣  Seguimiento 1 - Punto 1")
+        print("    ➤ Ejecuta el análisis correspondiente al seguimiento 1 punto 1.\n")
+
+        print("7️⃣  Seguimiento 1 - Punto 3")
+        print("    ➤ Ejecuta el análisis correspondiente al seguimiento 1 punto 3.\n")
+
+        print("8️⃣  Seguimiento 2 - Punto 1")
+        print("    ➤ Ejecuta el algoritmo relacionado al seguimiento 2 punto 1.\n")
+
+        print("9️⃣  Seguimiento 2 - Punto 2")
+        print("    ➤ Ejecuta el algoritmo relacionado al seguimiento 2 punto 2.\n")
+
+        print("0️⃣  Salir del programa\n")
+        print("-" * 70)
+
+        opcion = input("👉 Ingrese el número de la opción que desea ejecutar: ").strip()
 
         if opcion == "1":
             ejecutar_descarga_y_unificacion()
+
         elif opcion == "2":
             jupyterNotebook()
+
         elif opcion == "3":
             contarCantidadPalabrasCategoria()
+
         elif opcion == "4":
             clusterizarDatos()
+
         elif opcion == "5":
             requerimiento5()
-        elif opcion=="6":
-            seguimiento1Punto1()
-        elif opcion=="7":
-            seguimiento1Punto3Llamado()
-        elif opcion=="8":
-            ejecutarGrafoDirigidoLLamado()
-        elif opcion=="9":
-            ejecutraSegue2Punto2()
-        elif opcion == "0":
-            print("Saliendo del programa...")
-            break
-        else:
-            print("Opción inválida. Por favor ingrese un número del 0 al 5.")
 
+        elif opcion == "6":
+            seguimiento1Punto1()
+
+        elif opcion == "7":
+            seguimiento1Punto3Llamado()
+
+        elif opcion == "8":
+            ejecutarGrafoDirigidoLLamado()
+
+        elif opcion == "9":
+            ejecutraSegue2Punto2()
+
+        elif opcion == "0":
+            print("\n👋 Saliendo del programa... ¡Hasta pronto!")
+            break
+
+        else:
+            print("\n⚠️  Opción inválida. Por favor ingrese un número del 0 al 9.")
 
 if __name__ == "__main__":
     mostrar_menu()
