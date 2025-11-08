@@ -58,9 +58,13 @@ def crear_linea_tiempo(articulos):
     plt.subplots_adjust(left=0.25, right=0.95, top=0.95, bottom=0.15)
 
     # Guardar imagen
-    plt.savefig(OUTPUT_IMG, dpi=300)
-    plt.show()
-    print(f"✅ Línea de tiempo con cuadrícula guardada en: {OUTPUT_IMG}")
+    try:
+        plt.savefig(OUTPUT_IMG, dpi=300)
+        print(f"✅ Línea de tiempo con cuadrícula guardada en: {OUTPUT_IMG}")
+    except Exception as e:
+        print(f"❌ Error al guardar línea de tiempo: {e}")
+    finally:
+        plt.close()  # Cerrar la figura para liberar memoria
 
 def mainLineaTemporal():
     articulos = cargar_articulos(INPUT_BIB)

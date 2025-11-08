@@ -4,8 +4,11 @@ import pandas as pd
 import plotly.express as px
 
 # 🔹 Configuración de rutas
-INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
-OUTPUT_IMG_HEATMAP = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\mapa_calor.png"
+INPUT_BIB = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'unified_with_metadata.bib')
+OUTPUT_IMG_HEATMAP = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'mapa_calor.png')
+
+# Crear directorio de imágenes si no existe
+os.makedirs(os.path.dirname(OUTPUT_IMG_HEATMAP), exist_ok=True)
 
 # ---------------- FUNCIONES ----------------
 
@@ -37,9 +40,12 @@ def generar_mapa_calor(paises):
         color_continuous_scale="Viridis",
         title="Mapa de calor de artículos por país"
     )
-    fig.write_image(OUTPUT_IMG_HEATMAP, scale=2)
-    fig.show()
-    print(f"✅ Mapa de calor guardado en: {OUTPUT_IMG_HEATMAP}")
+    try:
+        fig.write_image(OUTPUT_IMG_HEATMAP, scale=2)
+        print(f"✅ Mapa de calor guardado en: {OUTPUT_IMG_HEATMAP}")
+    except Exception as e:
+        print(f"❌ Error al guardar mapa de calor: {e}")
+        print("💡 Intenta instalar kaleido: pip install kaleido")
 
 def imprimir_articulos_sin_pais(sin_pais):
     """Imprime los artículos que no tienen afiliación de país."""

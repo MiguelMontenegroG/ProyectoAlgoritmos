@@ -6,8 +6,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import os
 
 # === CONFIGURACIÓN ===
-ARCHIVO_BIB = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\seguimiento2Punto1.bib'
-CARPETA_SALIDA = r'C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\procesamiento\Seguimiento2\Punto1'
+ARCHIVO_BIB = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'output', 'seguimiento2Punto1.bib')
+CARPETA_SALIDA = os.path.dirname(__file__)
 UMBRAL_SIMILITUD = 0.35
 
 os.makedirs(CARPETA_SALIDA, exist_ok=True)
@@ -70,10 +70,14 @@ def mostrar_y_guardar_grafo(G):
     plt.axis("off")
     plt.tight_layout()
 
-    salida = os.path.join(CARPETA_SALIDA, "grafo_General.png")
-    plt.savefig(salida, dpi=300, bbox_inches="tight")
-    plt.show()
-    print(f"✅ Grafo guardado como {salida}")
+    try:
+        salida = os.path.join(CARPETA_SALIDA, "grafo_General.png")
+        plt.savefig(salida, dpi=300, bbox_inches="tight")
+        print(f"✅ Grafo guardado como {salida}")
+    except Exception as e:
+        print(f"❌ Error al guardar grafo: {e}")
+    finally:
+        plt.close()  # Cerrar la figura para liberar memoria
 
 
 # === 4️⃣ Calcular caminos mínimos con Floyd–Warshall ===

@@ -5,8 +5,11 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 # --- CONFIGURACIÓN ---
-INPUT_BIB = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\unified_with_metadata.bib"
-OUTPUT_IMG = r"C:\Users\NICOLAS PEÑA RINCON\Documents\GitHub\ProyectoAlgoritmos\output\imagenes\nubePalabras.png"
+INPUT_BIB = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'unified_with_metadata.bib')
+OUTPUT_IMG = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'nubePalabras.png')
+
+# Crear directorio de imágenes si no existe
+os.makedirs(os.path.dirname(OUTPUT_IMG), exist_ok=True)
 
 def cargar_palabras_clave(bib_path):
     """
@@ -58,13 +61,16 @@ def generar_nube(palabras):
     plt.figure(figsize=(12, 8))
     plt.imshow(nube, interpolation="bilinear")
     plt.axis("off")
-    plt.tight_layout()
-    plt.savefig(OUTPUT_IMG, dpi=300)
-    plt.show()
-
-    print(f"✅ Nube de palabras generada correctamente en: {OUTPUT_IMG}")
-    print(f"📊 Total de palabras clave procesadas: {len(palabras)}")
-    print(f"🔠 Palabras únicas: {len(frecuencias)}")
+    try:
+        plt.tight_layout()
+        plt.savefig(OUTPUT_IMG, dpi=300)
+        print(f"✅ Nube de palabras generada correctamente en: {OUTPUT_IMG}")
+        print(f"📊 Total de palabras clave procesadas: {len(palabras)}")
+        print(f"🔠 Palabras únicas: {len(frecuencias)}")
+    except Exception as e:
+        print(f"❌ Error al guardar nube de palabras: {e}")
+    finally:
+        plt.close()  # Cerrar la figura para liberar memoria
 
 def mainNubePalabras():
     print("📚 Generando nube de palabras (ponderada por frecuencia acumulada en keywords)...")
