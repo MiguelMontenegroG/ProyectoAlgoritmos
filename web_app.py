@@ -84,7 +84,7 @@ def mainRequerimiento2_web():
 
         # Cargar abstracts
         abstracts = load_bibtex_abstracts(bibtex_path)
-        if not abstracts:
+        if abstracts.empty:
             print("❌ No se pudieron cargar los abstracts")
             return
 
@@ -122,7 +122,7 @@ def mainRequerimiento2_web():
 
         # Ejecutar análisis de similitud
         print("\n🔍 Ejecutando análisis de similitud de 6 algoritmos...")
-        analyzer = run_similarity_analysis(abstract1_data['abstract'], abstract2_data['abstract'])
+        analyzer = run_similarity_analysis(abstract1_data, abstract2_data)
         print("✅ Análisis de similitud completado")
 
         # Mostrar resultados detallados
@@ -131,7 +131,7 @@ def mainRequerimiento2_web():
 
         # Generar visualización
         print("\n🎨 Generando gráfico de comparación...")
-        create_visualization(analyzer.comparison_results)
+        create_visualization(analyzer.compare_all())
         print("✅ Gráfico generado exitosamente")
 
         print("\n🎯 Análisis de similitud textual completado exitosamente")
@@ -201,7 +201,7 @@ def mainRequerimiento2_first_last_web():
 
         # Cargar abstracts
         abstracts = load_bibtex_abstracts(bibtex_path)
-        if not abstracts:
+        if abstracts.empty:
             print("❌ No se pudieron cargar los abstracts")
             return
 
@@ -239,7 +239,7 @@ def mainRequerimiento2_first_last_web():
 
         # Ejecutar análisis de similitud
         print("\n🔍 Ejecutando análisis de similitud de 6 algoritmos...")
-        analyzer = run_similarity_analysis(abstract1_data['abstract'], abstract2_data['abstract'])
+        analyzer = run_similarity_analysis(abstract1_data, abstract2_data)
         print("✅ Análisis de similitud completado")
 
         # Mostrar resultados detallados automáticamente
@@ -248,7 +248,7 @@ def mainRequerimiento2_first_last_web():
 
         # Generar visualización automáticamente
         print("\n🎨 Generando gráfico comparativo interactivo...")
-        create_visualization(analyzer.comparison_results)
+        create_visualization(analyzer.compare_all())
         print("✅ Gráfico interactivo generado exitosamente")
 
         print("\n🎯 Análisis de similitud completado exitosamente")
@@ -631,10 +631,147 @@ ANALYSIS_TOOLS_TEMPLATE = """
             </form>
         </div>
 
+        <div class="option">
+            <h3>🔍 Análisis de Similitud Personalizado</h3>
+            <p>Selecciona manualmente dos artículos específicos para comparar usando todos los algoritmos de similitud.</p>
+            <p><strong>Características:</strong> Selección personalizada de artículos, comparación detallada</p>
+            <a href="/similarity_custom" class="btn">🎛️ Configurar Análisis</a>
+        </div>
+
         <div style="text-align: center; margin-top: 30px;">
             <a href="/" class="btn btn-secondary">⬅️ Volver al Menú Principal</a>
         </div>
     </div>
+</body>
+</html>
+"""
+
+SIMILARITY_CUSTOM_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Similitud Personalizado</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .article-selector { background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #28a745; }
+        .article-list { max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; }
+        .article-item { padding: 10px; margin: 5px 0; border: 1px solid #eee; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
+        .article-item:hover { background: #e9ecef; }
+        .article-item.selected { background: #d4edda; border-color: #28a745; }
+        .article-title { font-weight: bold; margin-bottom: 5px; }
+        .article-meta { font-size: 0.9em; color: #666; }
+        .btn { background: #28a745; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin: 5px; }
+        .btn:hover { background: #218838; }
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { background: #5a6268; }
+        .selection-summary { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Análisis de Similitud Personalizado</h1>
+            <p>Selecciona dos artículos para comparar</p>
+        </div>
+
+        {% if articles %}
+        <div class="article-selector">
+            <h3>📄 Artículos Disponibles ({{ articles|length }})</h3>
+            <p>Selecciona dos artículos haciendo clic en ellos:</p>
+            <div class="article-list" id="article-list">
+                {% for article in articles %}
+                <div class="article-item" data-id="{{ article.id }}" onclick="selectArticle(this)">
+                    <div class="article-title">{{ article.title[:80] }}{% if article.title|length > 80 %}...{% endif %}</div>
+                    <div class="article-meta">
+                        <strong>ID:</strong> {{ article.id }} |
+                        <strong>Año:</strong> {{ article.year }} |
+                        <strong>Autores:</strong> {{ article.authors[:50] }}{% if article.authors|length > 50 %}...{% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="selection-summary" id="selection-summary" style="display: none;">
+            <h4>📋 Artículos Seleccionados:</h4>
+            <div id="selected-articles"></div>
+        </div>
+
+        <form method="post" action="/execute_similarity_custom" id="similarity-form" style="display: none;">
+            <input type="hidden" name="article1_id" id="article1_id">
+            <input type="hidden" name="article2_id" id="article2_id">
+            <button type="submit" class="btn">🚀 Ejecutar Análisis de Similitud</button>
+        </form>
+        {% else %}
+        <div class="article-selector">
+            <h3>❌ No se encontraron artículos</h3>
+            <p>No hay artículos disponibles para el análisis. Asegúrate de haber ejecutado "Descargar y Unificar Datos" primero.</p>
+        </div>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/analysis_tools" class="btn btn-secondary">⬅️ Volver a Herramientas</a>
+        </div>
+    </div>
+
+    <script>
+        let selectedArticles = [];
+
+        function selectArticle(element) {
+            const articleId = element.getAttribute('data-id');
+            const isSelected = element.classList.contains('selected');
+
+            if (isSelected) {
+                // Deseleccionar
+                element.classList.remove('selected');
+                selectedArticles = selectedArticles.filter(id => id !== articleId);
+            } else {
+                // Seleccionar (máximo 2)
+                if (selectedArticles.length < 2) {
+                    element.classList.add('selected');
+                    selectedArticles.push(articleId);
+                } else {
+                    alert('Solo puedes seleccionar 2 artículos para comparar.');
+                    return;
+                }
+            }
+
+            updateSelectionSummary();
+        }
+
+        function updateSelectionSummary() {
+            const summary = document.getElementById('selection-summary');
+            const selectedDiv = document.getElementById('selected-articles');
+            const form = document.getElementById('similarity-form');
+
+            if (selectedArticles.length === 0) {
+                summary.style.display = 'none';
+                form.style.display = 'none';
+                return;
+            }
+
+            summary.style.display = 'block';
+            selectedDiv.innerHTML = '';
+
+            selectedArticles.forEach((id, index) => {
+                const articleElement = document.querySelector(`[data-id="${id}"]`);
+                const title = articleElement.querySelector('.article-title').textContent;
+                selectedDiv.innerHTML += `<p><strong>Artículo ${index + 1}:</strong> ${title} (ID: ${id})</p>`;
+            });
+
+            if (selectedArticles.length === 2) {
+                form.style.display = 'block';
+                document.getElementById('article1_id').value = selectedArticles[0];
+                document.getElementById('article2_id').value = selectedArticles[1];
+            } else {
+                form.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
 """
@@ -916,6 +1053,64 @@ VISUALIZATIONS_TEMPLATE = """
 </html>
 """
 
+SEGUIMIENTO2_P2_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento 2 Punto 2 - Configuración</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1em; }
+        .form-group input:focus { outline: none; border-color: #667eea; }
+        .info { background: #e7f3ff; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #007bff; }
+        .btn { background: #28a745; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; width: 100%; }
+        .btn:hover { background: #218838; }
+        .btn-secondary { background: #6c757d; margin-top: 10px; }
+        .btn-secondary:hover { background: #5a6268; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Seguimiento 2 Punto 2</h1>
+            <p>Análisis de Grafos de Coocurrencia</p>
+        </div>
+
+        <div class="info">
+            <strong>ℹ️ Información:</strong> Este análisis genera grafos de coocurrencia de términos a partir de los abstracts.
+            Configure los parámetros para personalizar el análisis.
+        </div>
+
+        <form method="post" action="/execute_seguimiento2_p2">
+            <div class="form-group">
+                <label for="max_documents">📄 Número máximo de documentos a procesar:</label>
+                <input type="number" id="max_documents" name="max_documents" min="10" max="1000" value="100" required>
+                <small style="color: #666;">Mínimo: 10, Máximo: 1000. Más documentos = análisis más completo pero más lento.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="min_cooccurrence">🔗 Mínimo de coocurrencias:</label>
+                <input type="number" id="min_cooccurrence" name="min_cooccurrence" min="1" max="10" value="1" required>
+                <small style="color: #666;">Mínimo: 1, Máximo: 10. Valores más altos = grafos más limpios pero menos conexiones.</small>
+            </div>
+
+            <button type="submit" class="btn">🚀 Ejecutar Análisis de Grafos</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/additional_analysis" class="btn btn-secondary">⬅️ Volver a Análisis Adicionales</a>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
 # Directorio temporal para almacenar resultados de ejecución
 TEMP_RESULTS_DIR = os.path.join(tempfile.gettempdir(), 'flask_bibliometric_results')
 os.makedirs(TEMP_RESULTS_DIR, exist_ok=True)
@@ -1114,6 +1309,38 @@ def index():
 def analysis_tools():
     return render_template_string(ANALYSIS_TOOLS_TEMPLATE)
 
+@app.route('/similarity_custom')
+def similarity_custom():
+    # Cargar artículos disponibles
+    try:
+        from procesamiento.Requerimiento2.requerimiento2Ejecutable import find_bibtex_file, load_bibtex_abstracts
+
+        bibtex_path = find_bibtex_file()
+        if bibtex_path:
+            articles_df = load_bibtex_abstracts(bibtex_path)
+            if not articles_df.empty:
+                # Limitar a primeros 100 artículos para mejor rendimiento
+                articles_df = articles_df[:100] if len(articles_df) > 100 else articles_df
+                # Convertir DataFrame a lista de diccionarios para el template
+                articles = []
+                for _, row in articles_df.iterrows():
+                    articles.append({
+                        'id': str(row['id']),
+                        'title': str(row['title']),
+                        'authors': str(row.get('authors', '')),
+                        'year': str(row.get('year', '')),
+                        'abstract': str(row.get('abstract', ''))
+                    })
+            else:
+                articles = []
+        else:
+            articles = []
+    except Exception as e:
+        print(f"Error cargando artículos: {e}")
+        articles = []
+
+    return render_template_string(SIMILARITY_CUSTOM_TEMPLATE, articles=articles)
+
 @app.route('/additional_analysis')
 def additional_analysis():
     return render_template_string("""
@@ -1170,11 +1397,8 @@ def additional_analysis():
 
             <div class="option">
                 <h3>⚡ Seguimiento 2 - Punto 2</h3>
-                <p>Algoritmo relacionado al seguimiento 2 punto 2.</p>
-                <form method="post" action="/execute">
-                    <input type="hidden" name="action" value="seguimiento2_p2">
-                    <button type="submit" class="btn">▶️ Ejecutar</button>
-                </form>
+                <p>Análisis de grafos de coocurrencia con parámetros configurables.</p>
+                <a href="/seguimiento2_p2_config" class="btn">⚙️ Configurar y Ejecutar</a>
             </div>
 
             <div class="option">
@@ -1261,13 +1485,157 @@ def execute():
             run_function_with_capture(mainAnalizador, execution_id)
             return redirect(url_for('results', execution_id=execution_id))
 
-        else:
-            flash('❌ Acción no reconocida.', 'error')
-
     except Exception as e:
         flash(f'❌ Error ejecutando acción: {str(e)}', 'error')
 
     return redirect(url_for('index'))
+
+@app.route('/execute_similarity_custom', methods=['POST'])
+def execute_similarity_custom():
+    if not IMPORTS_OK:
+        flash('Error: Los módulos del proyecto no están disponibles. Verifique la instalación.', 'error')
+        return redirect(url_for('similarity_custom'))
+
+    try:
+        article1_id = request.form.get('article1_id')
+        article2_id = request.form.get('article2_id')
+
+        if not article1_id or not article2_id:
+            flash('❌ Debes seleccionar dos artículos para comparar.', 'error')
+            return redirect(url_for('similarity_custom'))
+
+        # Crear ID único para esta ejecución
+        execution_id = f"similarity_custom_{int(time.time())}"
+
+        def custom_similarity_analysis():
+            """Análisis de similitud personalizado con artículos seleccionados"""
+            import os
+            import sys
+            import pandas as pd
+            import warnings
+            warnings.filterwarnings('ignore')
+
+            # Configurar rutas
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            possible_src_paths = [
+                os.path.join(current_dir, '..', '..', '..', 'src'),
+                os.path.join(current_dir, '..', '..', 'src'),
+                os.path.join(os.getcwd(), 'src'),
+                os.path.abspath(os.path.join(current_dir, '..', '..', '..', 'src'))
+            ]
+
+            src_path = None
+            for path in possible_src_paths:
+                if os.path.exists(path):
+                    src_path = os.path.abspath(path)
+                    break
+
+            if src_path is None:
+                print("❌ ERROR: No se pudo encontrar el directorio 'src'")
+                return
+
+            project_root = os.path.dirname(src_path)
+
+            if src_path not in sys.path:
+                sys.path.insert(0, src_path)
+            if project_root not in sys.path:
+                sys.path.insert(0, project_root)
+
+            print("=" * 80)
+            print("                🎯 ANÁLISIS DE SIMILITUD PERSONALIZADO")
+            print("=" * 80)
+            print(f"Comparando artículos: {article1_id} vs {article2_id}")
+            print("=" * 80)
+
+            try:
+                # Importar funciones necesarias
+                from procesamiento.Requerimiento2.requerimiento2Ejecutable import (
+                    load_bibtex_abstracts, run_similarity_analysis, display_article_info,
+                    show_detailed_analysis, create_visualization, find_bibtex_file
+                )
+
+                # Buscar archivo BibTeX
+                bibtex_path = find_bibtex_file()
+                if not bibtex_path:
+                    print("\n❌ No se encontró archivo BibTeX unificado")
+                    print("Ejecute primero el Requerimiento 1 para generar el archivo unificado")
+                    return
+
+                print(f"\n📁 Archivo BibTeX encontrado: {os.path.basename(bibtex_path)}")
+
+                # Cargar abstracts
+                abstracts = load_bibtex_abstracts(bibtex_path)
+                if abstracts.empty:
+                    print("❌ No se pudieron cargar los abstracts")
+                    return
+
+                print(f"✅ Se cargaron {len(abstracts)} abstracts exitosamente")
+
+                # Buscar los artículos seleccionados en el DataFrame
+                article1_row = abstracts[abstracts['id'] == article1_id]
+                article2_row = abstracts[abstracts['id'] == article2_id]
+
+                if article1_row.empty or article2_row.empty:
+                    print(f"❌ No se pudieron encontrar los artículos seleccionados: {article1_id}, {article2_id}")
+                    return
+
+                abstract1_data = {
+                    'title': str(article1_row.iloc[0]['title']),
+                    'abstract': str(article1_row.iloc[0]['abstract']),
+                    'year': str(article1_row.iloc[0]['year'])
+                }
+                abstract2_data = {
+                    'title': str(article2_row.iloc[0]['title']),
+                    'abstract': str(article2_row.iloc[0]['abstract']),
+                    'year': str(article2_row.iloc[0]['year'])
+                }
+
+                print(f"📄 Artículo 1: {abstract1_data['title'][:60]}...")
+                print(f"📄 Artículo 2: {abstract2_data['title'][:60]}...")
+
+                # Mostrar información básica
+                print(f"\n📊 Información del Artículo 1:")
+                print(f"   ID: {article1_id}")
+                print(f"   Título: {abstract1_data['title'][:50]}...")
+                print(f"   Año: {abstract1_data['year']}")
+                print(f"   Longitud abstract: {len(abstract1_data['abstract'])} caracteres")
+
+                print(f"\n📊 Información del Artículo 2:")
+                print(f"   ID: {article2_id}")
+                print(f"   Título: {abstract2_data['title'][:50]}...")
+                print(f"   Año: {abstract2_data['year']}")
+                print(f"   Longitud abstract: {len(abstract2_data['abstract'])} caracteres")
+
+                # Ejecutar análisis de similitud
+                print("\n🔍 Ejecutando análisis de similitud de 6 algoritmos...")
+                analyzer = run_similarity_analysis(abstract1_data, abstract2_data)
+                print("✅ Análisis de similitud completado")
+
+                # Mostrar resultados detallados
+                print("\n📈 RESULTADOS DETALLADOS:")
+                show_detailed_analysis(analyzer)
+
+                # Generar visualización
+                print("\n🎨 Generando gráfico de comparación...")
+                create_visualization(analyzer.compare_all())
+                print("✅ Gráfico generado exitosamente")
+
+                print("\n🎯 Análisis de similitud personalizado completado exitosamente")
+                print("   Los resultados y gráficos están disponibles en la interfaz web")
+
+            except Exception as e:
+                print(f"❌ Error en el análisis personalizado: {e}")
+                import traceback
+                traceback.print_exc()
+
+        flash('🎯 Ejecutando análisis de similitud personalizado...', 'success')
+        run_function_with_capture(custom_similarity_analysis, execution_id)
+
+        return redirect(url_for('results', execution_id=execution_id))
+
+    except Exception as e:
+        flash(f'❌ Error iniciando análisis personalizado: {str(e)}', 'error')
+        return redirect(url_for('similarity_custom'))
 
 @app.route('/download_unify')
 def download_unify():
@@ -1318,6 +1686,157 @@ def execute_download_unify():
     except Exception as e:
         flash(f'❌ Error iniciando proceso: {str(e)}', 'error')
         return redirect(url_for('download_unify'))
+
+@app.route('/seguimiento2_p2_config')
+def seguimiento2_p2_config():
+    return render_template_string(SEGUIMIENTO2_P2_TEMPLATE)
+
+@app.route('/execute_seguimiento2_p2', methods=['POST'])
+def execute_seguimiento2_p2():
+    if not IMPORTS_OK:
+        flash('Error: Los módulos del proyecto no están disponibles. Verifique la instalación.', 'error')
+        return redirect(url_for('seguimiento2_p2_config'))
+
+    try:
+        max_documents = int(request.form.get('max_documents', 100))
+        min_cooccurrence = int(request.form.get('min_cooccurrence', 1))
+
+        # Validar parámetros
+        if max_documents < 10 or max_documents > 1000:
+            flash('❌ El número de documentos debe estar entre 10 y 1000.', 'error')
+            return redirect(url_for('seguimiento2_p2_config'))
+
+        if min_cooccurrence < 1 or min_cooccurrence > 10:
+            flash('❌ El mínimo de coocurrencias debe estar entre 1 y 10.', 'error')
+            return redirect(url_for('seguimiento2_p2_config'))
+
+        # Crear ID único para esta ejecución
+        execution_id = f"seguimiento2_p2_{int(time.time())}"
+
+        def custom_seguimiento2_p2():
+            """Seguimiento 2 punto 2 con parámetros personalizados"""
+            import os
+            import sys
+            import subprocess
+
+            print("=" * 80)
+            print("                ⚡ SEGUIMIENTO 2 PUNTO 2: ANÁLISIS DE GRAFO (PERSONALIZADO)")
+            print("=" * 80)
+            print(f"Parámetros: MAX_DOCUMENTS={max_documents}, MIN_COOCCURRENCE={min_cooccurrence}")
+            print("=" * 80)
+
+            try:
+                # Configurar rutas
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                possible_src_paths = [
+                    os.path.join(current_dir, '..', '..', '..', 'src'),
+                    os.path.join(current_dir, '..', '..', 'src'),
+                    os.path.join(os.getcwd(), 'src'),
+                    os.path.abspath(os.path.join(current_dir, '..', '..', '..', 'src'))
+                ]
+
+                src_path = None
+                for path in possible_src_paths:
+                    if os.path.exists(path):
+                        src_path = os.path.abspath(path)
+                        break
+
+                if src_path is None:
+                    print("❌ ERROR: No se pudo encontrar el directorio 'src'")
+                    return
+
+                project_root = os.path.dirname(src_path)
+
+                if src_path not in sys.path:
+                    sys.path.insert(0, src_path)
+                if project_root not in sys.path:
+                    sys.path.insert(0, project_root)
+
+                # Ejecutar el script main_fast.py con parámetros modificados
+                script_path = os.path.join(project_root, 'procesamiento', 'Seguimiento2', 'punto2', 'main_fast.py')
+
+                if os.path.exists(script_path):
+                    print(f"📊 Iniciando análisis personalizado de {max_documents} documentos...")
+                    print(f"⏱️  Tiempo estimado: {max_documents//50 + 1}-{max_documents//25 + 2} minutos")
+                    print("🎨 Se generarán visualizaciones automáticamente\n")
+
+                    # Modificar las variables globales en el script
+                    # Leer el archivo y reemplazar las constantes
+                    with open(script_path, 'r', encoding='utf-8') as f:
+                        script_content = f.read()
+
+                    # Reemplazar las constantes
+                    script_content = script_content.replace(
+                        'MAX_DOCUMENTS = 100  # Número de documentos a procesar (análisis rápido estándar)',
+                        f'MAX_DOCUMENTS = {max_documents}  # Número de documentos a procesar (personalizado)'
+                    )
+                    script_content = script_content.replace(
+                        'MIN_COOCCURRENCE = 1  # Mínimo de coocurrencias (aumenta para menos ruido)',
+                        f'MIN_COOCCURRENCE = {min_cooccurrence}  # Mínimo de coocurrencias (personalizado)'
+                    )
+
+                    # Reemplazar la manipulación de rutas relativa con rutas absolutas
+                    script_path_dir = os.path.dirname(script_path)
+                    parent_parent_parent = os.path.abspath(os.path.join(script_path_dir, '..', '..', '..'))
+                    script_content = script_content.replace(
+                        'sys.path.insert(0, str(Path(__file__).parent.parent.parent))',
+                        f'sys.path.insert(0, r"{parent_parent_parent}")'
+                    )
+
+                    # Crear un archivo temporal con las modificaciones
+                    import tempfile
+                    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as temp_file:
+                        temp_file.write(script_content)
+                        temp_script_path = temp_file.name
+
+                    try:
+                        # Ejecutar el script modificado
+                        result = subprocess.run([sys.executable, temp_script_path],
+                                              cwd=os.path.dirname(script_path),
+                                              capture_output=True,
+                                              text=True,
+                                              timeout=600)  # 10 minutos timeout
+
+                        # Mostrar salida
+                        if result.stdout:
+                            print("SALIDA DEL ANÁLISIS:")
+                            print(result.stdout)
+
+                        if result.stderr:
+                            print("MENSAJES DE ERROR:")
+                            print(result.stderr)
+
+                        if result.returncode == 0:
+                            print("\n✅ Análisis personalizado completado exitosamente")
+                            print("📊 Los gráficos están disponibles en la interfaz web")
+                        else:
+                            print(f"\n❌ Error en el análisis personalizado (código {result.returncode})")
+
+                    finally:
+                        # Limpiar archivo temporal
+                        try:
+                            os.unlink(temp_script_path)
+                        except:
+                            pass
+
+                else:
+                    print(f"❌ Script no encontrado: {script_path}")
+
+            except subprocess.TimeoutExpired:
+                print("❌ El análisis personalizado tardó demasiado tiempo (timeout)")
+            except Exception as e:
+                print(f"❌ Error ejecutando el análisis personalizado: {e}")
+                import traceback
+                traceback.print_exc()
+
+        flash(f'⚡ Ejecutando análisis personalizado (Documentos: {max_documents}, Coocurrencias mínimas: {min_cooccurrence})...', 'success')
+        run_function_with_capture(custom_seguimiento2_p2, execution_id)
+
+        return redirect(url_for('results', execution_id=execution_id))
+
+    except Exception as e:
+        flash(f'❌ Error iniciando análisis personalizado: {str(e)}', 'error')
+        return redirect(url_for('seguimiento2_p2_config'))
 
 @app.route('/visualizations')
 def visualizations():

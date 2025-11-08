@@ -6,7 +6,7 @@ from collections import Counter
 
 # --- CONFIGURACIÓN ---
 INPUT_BIB = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'unified_with_metadata.bib')
-OUTPUT_IMG = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'nubePalabras.png')
+OUTPUT_IMG = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'nubePalabras.png')
 
 # Crear directorio de imágenes si no existe
 os.makedirs(os.path.dirname(OUTPUT_IMG), exist_ok=True)

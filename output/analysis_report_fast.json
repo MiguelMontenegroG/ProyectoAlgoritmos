@@ -1,56 +1,56 @@
 {
-  "timestamp": "2025-11-08T02:22:38.595672",
+  "timestamp": "2025-11-08T11:53:12.992876",
   "sample_size": 100,
   "max_documents_config": 100,
   "min_cooccurrence_config": 1,
   "graph_stats": {
-    "nodes": 1782,
-    "edges": 146853,
-    "density": 0.09254249400234801,
-    "average_degree": 164.8181818181818
+    "nodes": 1215,
+    "edges": 18885,
+    "density": 0.02560660605690809,
+    "average_degree": 31.08641975308642
   },
   "top_nodes": [
     [
-      "thinking",
-      1750
-    ],
-    [
       "computational",
-      1690
-    ],
-    [
-      "student",
-      1407
-    ],
-    [
-      "skill",
-      1383
+      537
     ],
     [
       "study",
-      1297
+      322
     ],
     [
-      "learning",
-      1267
+      "model",
+      310
     ],
     [
-      "education",
-      1158
+      "paper",
+      282
     ],
     [
-      "research",
-      1153
+      "one",
+      217
     ],
     [
-      "result",
-      1123
+      "approach",
+      205
     ],
     [
-      "programming",
-      1055
+      "two",
+      204
+    ],
+    [
+      "present",
+      203
+    ],
+    [
+      "system",
+      198
+    ],
+    [
+      "method",
+      187
     ]
   ],
   "num_components": 1,
-  "clustering_coefficient": 0.001663164347789535
+  "clustering_coefficient": 0.0559489899292813
 }

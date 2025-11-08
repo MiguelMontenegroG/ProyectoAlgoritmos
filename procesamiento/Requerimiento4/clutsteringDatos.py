@@ -46,7 +46,16 @@ def mostrar_dendrograma(Z, abstracts, metodo):
     dendrogram(Z, labels=[f"Abs {i+1}" for i in range(len(abstracts))], leaf_rotation=90)
     plt.title(f"Dendrograma - Método {metodo}")
     plt.tight_layout()
-    plt.show()
+
+    # Guardar gráfico en lugar de mostrar
+    output_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'output')
+    os.makedirs(output_dir, exist_ok=True)
+    filename = f"dendrograma_{metodo.lower().replace(' ', '_')}.png"
+    plt.savefig(os.path.join(output_dir, filename), dpi=300, bbox_inches='tight')
+    print(f"💾 Dendrograma guardado en: output/{filename}")
+
+    # Cerrar figura para liberar memoria
+    plt.close()
 
 def mainRequerimiento4():
     ruta_bib = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'requerimiento4.bib')

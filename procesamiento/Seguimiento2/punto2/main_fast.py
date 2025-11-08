@@ -10,11 +10,41 @@ from pathlib import Path
 import time
 
 # Agregar rutas al path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+script_dir = Path(__file__).parent
+project_root = script_dir.parent.parent.parent
 
-from cooccurrence_graph import build_cooccurrence_graph_from_abstracts
-from graph_analyzer import GraphAnalyzer
-from graph_visualizer import GraphVisualizer
+# Detectar si estamos ejecutando desde un archivo temporal (web app)
+is_temp_file = str(script_dir).startswith('/tmp') or str(script_dir).startswith('\\tmp') or 'temp' in str(script_dir).lower()
+
+if is_temp_file:
+    # Si es un archivo temporal, usar rutas absolutas
+    sys.path.insert(0, str(project_root))
+    try:
+        from procesamiento.Seguimiento2.punto2.cooccurrence_graph import build_cooccurrence_graph_from_abstracts
+        from procesamiento.Seguimiento2.punto2.graph_analyzer import GraphAnalyzer
+        from procesamiento.Seguimiento2.punto2.graph_visualizer import GraphVisualizer
+    except ImportError as e:
+        print(f"❌ Error importando módulos desde archivo temporal: {e}")
+        sys.exit(1)
+else:
+    # Si es el archivo original, usar imports relativos
+    sys.path.insert(0, str(project_root))
+    sys.path.insert(0, str(script_dir))
+
+    try:
+        from cooccurrence_graph import build_cooccurrence_graph_from_abstracts
+        from graph_analyzer import GraphAnalyzer
+        from graph_visualizer import GraphVisualizer
+    except ImportError as e:
+        print(f"❌ Error importando módulos locales: {e}")
+        print("Intentando importaciones absolutas...")
+        try:
+            from procesamiento.Seguimiento2.punto2.cooccurrence_graph import build_cooccurrence_graph_from_abstracts
+            from procesamiento.Seguimiento2.punto2.graph_analyzer import GraphAnalyzer
+            from procesamiento.Seguimiento2.punto2.graph_visualizer import GraphVisualizer
+        except ImportError as e2:
+            print(f"❌ Error en importaciones absolutas: {e2}")
+            sys.exit(1)
 import bibtexparser
 from bibtexparser.bparser import BibTexParser
 from bibtexparser.customization import convert_to_unicode
@@ -72,10 +102,16 @@ def main():
     start_time = time.time()
     
     # Rutas - buscar archivo BibTeX automáticamente
+    if is_temp_file:
+        # Si es archivo temporal, usar la ruta del proyecto que ya tenemos
+        output_dir = project_root / 'output'
+    else:
+        output_dir = Path(__file__).parent.parent.parent.parent / 'output'
+
     possible_bib_files = [
-        Path(__file__).parent.parent.parent.parent / 'output' / 'unified_cleaned.bib',
-        Path(__file__).parent.parent.parent.parent / 'output' / 'unifed_reducido.bib',
-        Path(__file__).parent.parent.parent.parent / 'output' / 'unified_with_metadata.bib',
+        output_dir / 'unified_cleaned.bib',
+        output_dir / 'unifed_reducido.bib',
+        output_dir / 'unified_with_metadata.bib',
         Path(r'C:\Users\ANGEL\Documents\GitHub\ProyectoAlgoritmos\output\unified_cleaned.bib')  # fallback
     ]
 
@@ -89,8 +125,7 @@ def main():
         print("❌ No se encontró archivo BibTeX. Ejecute primero 'Descargar y Unificar Datos'")
         return
 
-    # Guardar imágenes en el directorio output principal del proyecto para que la web app las encuentre
-    output_dir = Path(__file__).parent.parent.parent.parent / 'output'
+    # Asegurar que el directorio output existe
     output_dir.mkdir(exist_ok=True)
     
     # 1. Cargar abstracts

@@ -5,7 +5,7 @@ import plotly.express as px
 
 # 🔹 Configuración de rutas
 INPUT_BIB = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'unified_with_metadata.bib')
-OUTPUT_IMG_HEATMAP = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'mapa_calor.png')
+OUTPUT_IMG_HEATMAP = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'mapa_calor.png')
 
 # Crear directorio de imágenes si no existe
 os.makedirs(os.path.dirname(OUTPUT_IMG_HEATMAP), exist_ok=True)

@@ -159,11 +159,12 @@ def load_bibtex_abstracts(filepath):
         filepath (str): Ruta al archivo BibTeX
 
     Returns:
-        list: Lista de diccionarios con título e abstract
+        pd.DataFrame: DataFrame con columnas id, title, abstract, year, authors
     """
     if not BIBTEX_AVAILABLE:
         print("❌ bibtexparser no está disponible. Instale con: pip install bibtexparser")
-        return []
+        import pandas as pd
+        return pd.DataFrame()
 
     try:
         parser = BibTexParser()
@@ -183,10 +184,13 @@ def load_bibtex_abstracts(filepath):
                     'authors': entry.get('author', 'N/A')
                 })
 
-        return abstracts_list
+        # Convertir a DataFrame para compatibilidad con el código existente
+        import pandas as pd
+        return pd.DataFrame(abstracts_list)
     except Exception as e:
         print(f"❌ Error cargando BibTeX: {e}")
-        return []
+        import pandas as pd
+        return pd.DataFrame()
 
 
 def find_bibtex_file():
@@ -224,12 +228,12 @@ def select_articles_interactive(abstracts):
     Permite seleccionar artículos de forma interactiva
 
     Args:
-        abstracts (list): Lista de abstracts disponibles
+        abstracts (pd.DataFrame): DataFrame de abstracts disponibles
 
     Returns:
         tuple: (abstract1_data, abstract2_data) o (None, None) si cancelado
     """
-    if not abstracts:
+    if abstracts.empty:
         print("❌ No hay abstracts disponibles")
         return None, None
 
@@ -239,11 +243,9 @@ def select_articles_interactive(abstracts):
     print("="*80)
 
     # Mostrar tabla de artículos disponibles
-    df_abstracts = pd.DataFrame(abstracts)
-    df_abstracts['index'] = range(len(df_abstracts))
-
+    display_table = abstracts[['id', 'title', 'year']].head(10).reset_index()
+    display_table = display_table[['index', 'id', 'title', 'year']]
     print("\nPrimeros 10 artículos disponibles:")
-    display_table = df_abstracts[['index', 'id', 'title', 'year']].head(10)
     print(display_table.to_string(index=False))
 
     if len(abstracts) > 10:
@@ -283,8 +285,8 @@ def select_articles_interactive(abstracts):
         except ValueError:
             print("❌ Por favor ingrese un número válido")
 
-    abstract1_data = abstracts[idx1]
-    abstract2_data = abstracts[idx2]
+    abstract1_data = abstracts.iloc[idx1].to_dict()
+    abstract2_data = abstracts.iloc[idx2].to_dict()
 
     return abstract1_data, abstract2_data
 
@@ -350,15 +352,22 @@ def run_similarity_analysis(abstract1_data, abstract2_data):
         bars = '█' * int(value*20)
         print(f"{i}. {name:25} {value:.4f} {bars}")
 
+    # En modo web, no preguntar por análisis detallado (se hace después)
     # Preguntar si mostrar análisis detallado
-    while True:
-        show_detailed = input(f"\n❓ ¿Desea ver el análisis detallado paso a paso? (s/n): ").strip().lower()
-        if show_detailed in ['s', 'si', 'y', 'yes', 'n', 'no']:
-            break
-        print("❌ Responda 's' para sí o 'n' para no")
+    try:
+        while True:
+            show_detailed = input(f"\n❓ ¿Desea ver el análisis detallado paso a paso? (s/n): ").strip().lower()
+            if show_detailed in ['s', 'si', 'y', 'yes', 'n', 'no']:
+                break
+            print("❌ Responda 's' para sí o 'n' para no")
 
-    if show_detailed in ['s', 'si', 'y', 'yes']:
-        show_detailed_analysis(analyzer)
+        if show_detailed in ['s', 'si', 'y', 'yes']:
+            show_detailed_analysis(analyzer)
+    except:
+        # En caso de error (modo no interactivo), no mostrar análisis detallado
+        pass
+
+    return analyzer
 
 
 def show_detailed_analysis(analyzer):
@@ -475,7 +484,8 @@ def create_visualization(comparison_results):
         plt.savefig(os.path.join(output_dir, 'similitud_textual_analisis.png'), dpi=300, bbox_inches='tight')
         print(f"\n💾 Gráfico guardado en: output/similitud_textual_analisis.png")
 
-        plt.show()
+        # No mostrar plt.show() en entorno web
+        plt.close()
 
     except Exception as e:
         print(f"⚠️ Error creando visualización: {e}")
@@ -517,7 +527,7 @@ def mainRequerimiento2():
     print("\n⏳ Cargando abstracts del archivo BibTeX...")
     abstracts = load_bibtex_abstracts(bibtex_path)
 
-    if not abstracts:
+    if abstracts.empty:
         print("❌ No se pudieron cargar abstracts del archivo")
         return
 

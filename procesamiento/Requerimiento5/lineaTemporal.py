@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # --- CONFIGURACIÓN ---
 INPUT_BIB = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'unified_with_metadata.bib')
-OUTPUT_IMG = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'imagenes', 'lineaTemporal.png')
+OUTPUT_IMG = os.path.join(os.path.dirname(__file__), '..', '..', 'output', 'lineaTemporal.png')
 
 def cargar_articulos(bib_path):
     """Lee el archivo .bib y devuelve una lista de tuplas (journal, year)."""

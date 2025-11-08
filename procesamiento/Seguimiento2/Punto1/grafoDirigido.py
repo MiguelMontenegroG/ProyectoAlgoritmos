@@ -7,7 +7,7 @@ import os
 
 # === CONFIGURACIÓN ===
 ARCHIVO_BIB = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'output', 'seguimiento2Punto1.bib')
-CARPETA_SALIDA = os.path.dirname(__file__)
+CARPETA_SALIDA = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'output')
 UMBRAL_SIMILITUD = 0.35
 
 os.makedirs(CARPETA_SALIDA, exist_ok=True)
@@ -73,9 +73,43 @@ def mostrar_y_guardar_grafo(G):
     try:
         salida = os.path.join(CARPETA_SALIDA, "grafo_General.png")
         plt.savefig(salida, dpi=300, bbox_inches="tight")
-        print(f"✅ Grafo guardado como {salida}")
+        print(f"✅ Grafo dirigido guardado como {salida}")
     except Exception as e:
-        print(f"❌ Error al guardar grafo: {e}")
+        print(f"❌ Error al guardar grafo dirigido: {e}")
+    finally:
+        plt.close()  # Cerrar la figura para liberar memoria
+
+# === 5.1️⃣ Mostrar y guardar grafo no dirigido ===
+def mostrar_y_guardar_grafo_no_dirigido(G):
+    # Convertir grafo dirigido a no dirigido
+    G_undirected = G.to_undirected()
+
+    plt.figure(figsize=(10, 8))
+    pos = nx.spring_layout(G_undirected, k=0.6, seed=42)
+
+    nx.draw_networkx_nodes(G_undirected, pos, node_color="lightgreen", node_size=1000, alpha=0.9)
+    nx.draw_networkx_edges(G_undirected, pos, edge_color="gray", width=1.2)
+    nx.draw_networkx_labels(G_undirected, pos, labels={n: n for n in G_undirected.nodes()}, font_size=10, font_color="black")
+
+    # Para grafo no dirigido, mostrar pesos en las aristas
+    edge_labels = {}
+    for u, v, data in G_undirected.edges(data=True):
+        # Tomar el peso máximo entre las direcciones (si existen ambas)
+        weight = data.get('weight', 0)
+        edge_labels[(u, v)] = f"{weight:.2f}"
+
+    nx.draw_networkx_edge_labels(G_undirected, pos, edge_labels=edge_labels, font_size=7)
+
+    plt.title("Grafo no dirigido de similitudes entre títulos (nodos numerados)", fontsize=13)
+    plt.axis("off")
+    plt.tight_layout()
+
+    try:
+        salida = os.path.join(CARPETA_SALIDA, "grafo_No_Dirigido.png")
+        plt.savefig(salida, dpi=300, bbox_inches="tight")
+        print(f"✅ Grafo no dirigido guardado como {salida}")
+    except Exception as e:
+        print(f"❌ Error al guardar grafo no dirigido: {e}")
     finally:
         plt.close()  # Cerrar la figura para liberar memoria
 
@@ -122,6 +156,7 @@ def ejecutarGrafoDirigido():
     print(f"🔢 Se procesaron {len(titulos)} artículos.")
     guardar_relaciones(G, titulos, CARPETA_SALIDA)
     mostrar_y_guardar_grafo(G)
+    mostrar_y_guardar_grafo_no_dirigido(G)
 
     print("Se muestran los caminos minimos")
     calcular_caminos_minimos(G)
