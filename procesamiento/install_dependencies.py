@@ -18,7 +18,10 @@ def check_installed(package_name):
         module_map = {
             "python-dotenv": "dotenv",
             "scikit-learn": "sklearn",
-            "kaleido": None  # Kaleido no se importa, solo se verifica con pip
+            "kaleido": None,  # Kaleido no se importa, solo se verifica con pip
+            "torch": "torch",
+            "torchaudio": "torchaudio",
+            "torchvision": "torchvision"
         }
 
         mod_name = module_map.get(package_name, package_name.replace("-", "_"))
@@ -66,10 +69,9 @@ def install_packages():
         'kaleido': 'Exportación de gráficos Plotly a imágenes'
     }
 
-    # Paquetes opcionales
+    # Paquetes opcionales (excluyendo torch para evitar reinstalación de versión pesada)
     optional = {
         'transformers': 'Modelos BERT',
-        'torch': 'Framework de deep learning',
         'sentence-transformers': 'Sentence-BERT para similitud semántica',
         'seaborn': 'Gráficas estadísticas'
     }
@@ -155,5 +157,3 @@ def verificar_kaleido_funcional():
 
 if __name__ == "__main__":
     install_packages()
-
-

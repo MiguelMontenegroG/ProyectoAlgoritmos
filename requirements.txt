@@ -43,10 +43,11 @@ python-dotenv>=0.19.0
 # Exportación de gráficos Plotly
 kaleido>=0.2.1
 
-# Modelos de IA (opcionales)
-transformers>=4.0.0
-torch>=1.9.0
-sentence-transformers>=2.0.0
+# Modelos de IA (opcionales) - Versión ligera para CPU
+torch>=2.5.0+cpu
+torchaudio>=2.5.0+cpu
+torchvision>=0.20.0+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
 
 # Framework web
 flask>=2.0.0

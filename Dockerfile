@@ -7,7 +7,8 @@ WORKDIR /app
 # Instalar dependencias del sistema (mínimas para versión web)
 RUN apt-get update && apt-get install -y \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # NOTA: Chrome y ChromeDriver NO se instalan en la versión web para reducir el tamaño
 # Estas dependencias solo están disponibles en modo consola con requirements-full.txt
@@ -24,8 +25,9 @@ RUN mkdir -p procesamiento
 # Copiar el script de instalación de dependencias
 COPY procesamiento/install_dependencies.py procesamiento/install_dependencies.py
 
-# Instalar dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
+# Instalar dependencias de Python sin cache para ahorrar espacio
+RUN pip install --no-cache-dir -r requirements.txt \
+    && rm -rf /root/.cache
 
 # Ejecutar el instalador de dependencias adicionales
 RUN python procesamiento/install_dependencies.py
