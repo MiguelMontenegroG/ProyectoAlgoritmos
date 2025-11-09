@@ -9,8 +9,9 @@ services:
       - ./output:/app/output
       - ./logs:/app/logs
     environment:
-      - PYTHONPATH=/app
-      - DISPLAY=:99
+      - PYTHONPATH=/app:/app/src
+      # DISPLAY no es necesario sin Chrome
+      # - DISPLAY=:99
     ports:
       - "8000:8000"
     command: ["python", "web_app.py"]

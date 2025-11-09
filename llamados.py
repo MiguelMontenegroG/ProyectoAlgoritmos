@@ -1,20 +1,60 @@
-from extractores.ieee_extractor import scrape_IEE
+# Importaciones con manejo de errores para módulos opcionales
+# Estos módulos requieren Selenium y solo están disponibles con requirements-full.txt
+try:
+    from extractores.ieee_extractor import scrape_IEE
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+    print("⚠️ Advertencia: Selenium no está disponible. La descarga de documentos no funcionará.")
+    print("💡 Para habilitar: pip install -r requirements-full.txt")
+
+try:
+    from extractores.sciencedirect_extractor import science_test_debug
+except ImportError:
+    science_test_debug = None
+    print("⚠️ Advertencia: science_test_debug no está disponible.")
+
+# Importaciones principales (siempre disponibles)
 from procesamiento.Requerimiento4.clutsteringDatos import mainRequerimiento4
 from procesamiento.Requerimiento3.FrecuenciaPalabra import mainEjecutableRequerimiento3
 from procesamiento.Requerimiento2.requerimiento2Ejecutable import mainRequerimiento2
-from extractores.sciencedirect_extractor import science_test_debug
 from procesamiento.Requerimiento5.requerimiento5Ejecutable import mainRequerimiento5
 from extractores.analizador import mainAnalizador
-from procesamiento.unifyBibtext import unificar  # renombrar tu función principal a unify_bibtex_main
-from instalarJupyter import mainJupyter
+from procesamiento.unifyBibtext import unificar
 from procesamiento.Seguimiento1.Punto1Seguimiento.mainSeguimiento1 import mainSeguimiento1
 from procesamiento.Seguimiento1.punto3Seguimiento.mainSeguimientoPunto3 import seguimiento1Punto3
 from procesamiento.Seguimiento2.Punto1.grafoDirigido import ejecutarGrafoDirigido
 from procesamiento.Seguimiento2.punto2.ejecutar import ejecutarEjecutar
 
+# Jupyter es opcional
+try:
+    from instalarJupyter import mainJupyter
+    JUPYTER_AVAILABLE = True
+except ImportError:
+    JUPYTER_AVAILABLE = False
+    print("⚠️ Advertencia: Jupyter no está disponible.")
+    print("💡 Para habilitar: pip install -r requirements-full.txt")
+    def mainJupyter():
+        print("❌ Jupyter Notebook no está disponible. Instale las dependencias completas.")
+
 
 
 def ejecutar_descarga_y_unificacion():
+    # Verificar si Selenium está disponible
+    if not SELENIUM_AVAILABLE:
+        print("❌ ERROR: Selenium no está disponible.")
+        print("=" * 70)
+        print("La descarga de documentos requiere Selenium y ChromeDriver.")
+        print("=" * 70)
+        print("💡 Para habilitar esta funcionalidad:")
+        print("   1. Instale las dependencias completas:")
+        print("      pip install -r requirements-full.txt")
+        print("   2. Asegúrese de tener Chrome/ChromeDriver instalado")
+        print("   3. Vuelva a ejecutar esta opción")
+        print("=" * 70)
+        input("\n⏸️  Presione Enter para continuar...")
+        return
+
     # Preguntar cuántos descargar
     try:
         num_ieee = int(input("¿Cuántas páginas descargar de IEEE? (0 para todas): ").strip())
@@ -32,7 +72,13 @@ def ejecutar_descarga_y_unificacion():
 
     # 1. Descargar archivos automáticamente
     print("Descargando archivos de IEEE...")
-    scrape_IEE(max_pages=num_ieee if num_ieee > 0 else None)
+    try:
+        scrape_IEE(max_pages=num_ieee if num_ieee > 0 else None)
+    except Exception as e:
+        print(f"❌ Error al descargar de IEEE: {e}")
+        print("💡 Verifique que Chrome/ChromeDriver estén instalados correctamente")
+        input("\n⏸️  Presione Enter para continuar...")
+        return
 
     # Pequeña pausa para asegurar que Chrome se cierre completamente
     import time
@@ -40,7 +86,10 @@ def ejecutar_descarga_y_unificacion():
 
     print("Descargando archivos de ScienceDirect...")
     try:
-        science_test_debug(max_pages=num_science if num_science > 0 else None)  # Descomentar si quieres activar
+        if science_test_debug:
+            science_test_debug(max_pages=num_science if num_science > 0 else None)
+        else:
+            print("⚠️ ScienceDirect extractor no está disponible")
     except Exception as e:
         print(f"❌ Error al descargar de ScienceDirect: {e}")
         print("💡 Posible solución: Actualizar ChromeDriver o verificar que Chrome esté actualizado")
@@ -68,9 +117,18 @@ def jupyterNotebook():
         opcion = input("👉 Seleccione la herramienta de análisis (0-2): ").strip()
 
         if opcion == "1":
-            print("\n🔬 Iniciando Jupyter Notebook...")
-            print("💡 Si no se abre automáticamente, copie la URL que aparecerá abajo")
-            mainJupyter()
+            if not JUPYTER_AVAILABLE:
+                print("\n❌ ERROR: Jupyter Notebook no está disponible.")
+                print("=" * 60)
+                print("💡 Para habilitar Jupyter Notebook:")
+                print("   1. Instale las dependencias completas:")
+                print("      pip install -r requirements-full.txt")
+                print("   2. Vuelva a ejecutar esta opción")
+                print("=" * 60)
+            else:
+                print("\n🔬 Iniciando Jupyter Notebook...")
+                print("💡 Si no se abre automáticamente, copie la URL que aparecerá abajo")
+                mainJupyter()
 
         elif opcion == "2":
             print("\n🎯 Iniciando Análisis de Similitud Textual...")

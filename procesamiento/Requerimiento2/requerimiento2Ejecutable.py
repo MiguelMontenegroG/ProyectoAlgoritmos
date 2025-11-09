@@ -166,16 +166,32 @@ def load_bibtex_abstracts(filepath):
         import pandas as pd
         return pd.DataFrame()
 
+    if not os.path.exists(filepath):
+        print(f"❌ El archivo no existe: {filepath}")
+        import pandas as pd
+        return pd.DataFrame()
+    
     try:
+        # Verificar tamaño del archivo
+        file_size = os.path.getsize(filepath)
+        print(f"📁 Cargando archivo: {os.path.basename(filepath)} ({file_size:,} bytes)")
+        
         parser = BibTexParser()
         parser.customization = convert_to_unicode
+        parser.ignore_nonstandard_types = False  # No ignorar tipos no estándar
+        parser.common_strings = []  # No usar strings comunes
 
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
             bibtex_db = bibtexparser.load(f, parser=parser)
 
+        print(f"📊 Total de entradas en el archivo: {len(bibtex_db.entries)}")
+        
         abstracts_list = []
+        entries_with_abstract = 0
+        entries_without_abstract = 0
+        
         for entry in bibtex_db.entries:
-            if 'abstract' in entry and entry['abstract'].strip():
+            if 'abstract' in entry and entry['abstract'] and entry['abstract'].strip():
                 abstracts_list.append({
                     'id': entry.get('ID', 'Unknown'),
                     'title': entry.get('title', 'No title'),
@@ -183,12 +199,29 @@ def load_bibtex_abstracts(filepath):
                     'year': entry.get('year', 'N/A'),
                     'authors': entry.get('author', 'N/A')
                 })
+                entries_with_abstract += 1
+            else:
+                entries_without_abstract += 1
+
+        print(f"✅ Entradas con abstract: {entries_with_abstract}")
+        if entries_without_abstract > 0:
+            print(f"⚠️ Entradas sin abstract: {entries_without_abstract}")
 
         # Convertir a DataFrame para compatibilidad con el código existente
         import pandas as pd
-        return pd.DataFrame(abstracts_list)
+        df = pd.DataFrame(abstracts_list)
+        
+        if df.empty:
+            print("⚠️ ADVERTENCIA: No se encontraron entradas con abstract en el archivo")
+            print("💡 El archivo puede estar vacío o las entradas no tienen el campo 'abstract'")
+        else:
+            print(f"✅ Se cargaron {len(df)} abstracts exitosamente")
+        
+        return df
     except Exception as e:
         print(f"❌ Error cargando BibTeX: {e}")
+        import traceback
+        traceback.print_exc()
         import pandas as pd
         return pd.DataFrame()
 
@@ -200,26 +233,56 @@ def find_bibtex_file():
     Returns:
         str: Ruta al archivo BibTeX encontrado
     """
-    # Posibles ubicaciones del archivo BibTeX
-    possible_paths = [
-        os.path.join(project_root, 'output', 'unified_cleaned.bib'),
-        os.path.join(project_root, 'output', 'unifed_reducido.bib'),
-        os.path.join(project_root, 'output', 'unified_with_metadata.bib'),
-        os.path.join(project_root, 'unified_cleaned.bib'),
-        os.path.join(project_root, 'unifed_reducido.bib')
+    # Buscar desde múltiples ubicaciones posibles
+    search_roots = [
+        project_root,  # Raíz del proyecto
+        os.getcwd(),   # Directorio actual de trabajo
+        os.path.dirname(os.path.abspath(__file__)),  # Directorio del script actual
     ]
+    
+    # Agregar rutas relativas comunes
+    for root in search_roots:
+        # Posibles ubicaciones del archivo BibTeX
+        possible_paths = [
+            os.path.join(root, 'output', 'unified_cleaned.bib'),
+            os.path.join(root, 'output', 'unifed_reducido.bib'),
+            os.path.join(root, 'output', 'unified_with_metadata.bib'),
+            os.path.join(root, 'unified_cleaned.bib'),
+            os.path.join(root, 'unifed_reducido.bib'),
+            os.path.join(root, 'procesamiento', '..', 'output', 'unified_cleaned.bib'),
+            os.path.join(root, '..', 'output', 'unified_cleaned.bib'),
+        ]
+        
+        for path in possible_paths:
+            # Resolver rutas relativas
+            abs_path = os.path.abspath(path)
+            if os.path.exists(abs_path):
+                print(f"📁 Archivo BibTeX encontrado en: {abs_path}")
+                return abs_path
 
-    for path in possible_paths:
-        if os.path.exists(path):
-            return path
-
-    # Buscar archivos .bib en el directorio output
-    output_dir = os.path.join(project_root, 'output')
-    if os.path.exists(output_dir):
-        for file in os.listdir(output_dir):
-            if file.endswith('.bib'):
-                return os.path.join(output_dir, file)
-
+    # Buscar archivos .bib en el directorio output (último recurso)
+    for root in search_roots:
+        output_dir = os.path.join(root, 'output')
+        if os.path.exists(output_dir):
+            try:
+                for file in os.listdir(output_dir):
+                    if file.endswith('.bib') and file not in ['duplicates.bib']:
+                        file_path = os.path.join(output_dir, file)
+                        print(f"📁 Archivo BibTeX encontrado en: {file_path}")
+                        return file_path
+            except Exception as e:
+                print(f"⚠️ Error buscando en {output_dir}: {e}")
+                continue
+    
+    print("❌ No se encontró archivo BibTeX unificado")
+    print("💡 Rutas buscadas:")
+    for root in search_roots:
+        print(f"   - {root}")
+        output_dir = os.path.join(root, 'output')
+        if os.path.exists(output_dir):
+            print(f"     └─ output/ existe: {output_dir}")
+        else:
+            print(f"     └─ output/ no existe")
     return None
 
 

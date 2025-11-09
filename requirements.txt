@@ -1,4 +1,5 @@
 # Dependencias principales del proyecto de análisis bibliométrico
+# Versión optimizada para despliegue web (sin Selenium/Jupyter)
 
 # Manipulación de datos
 pandas>=1.5.0
@@ -13,9 +14,9 @@ nltk>=3.7
 # Lectura de archivos BibTeX
 bibtexparser>=1.4.0
 
-# Solicitudes HTTP y web scraping
+# Solicitudes HTTP (sin web scraping pesado)
 requests>=2.25.0
-selenium>=4.0.0
+# selenium>=4.0.0  # DESHABILITADO para versión web - usar requirements-full.txt para modo consola
 
 # Visualización
 matplotlib>=3.5.0
@@ -50,6 +51,6 @@ sentence-transformers>=2.0.0
 # Framework web
 flask>=2.0.0
 
-# Jupyter (para desarrollo)
-jupyter>=1.0.0
-ipykernel>=6.0.0
+# Jupyter DESHABILITADO para versión web
+# jupyter>=1.0.0  # DESHABILITADO para versión web - usar requirements-full.txt para modo consola
+# ipykernel>=6.0.0  # DESHABILITADO para versión web

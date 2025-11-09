@@ -36,27 +36,28 @@ def mainRequerimiento2_web():
 
     # Configurar rutas
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = current_dir
+    src_path = os.path.join(project_root, 'src')
+
     possible_src_paths = [
+        src_path,
         os.path.join(current_dir, '..', '..', '..', 'src'),
         os.path.join(current_dir, '..', '..', 'src'),
         os.path.join(os.getcwd(), 'src'),
         os.path.abspath(os.path.join(current_dir, '..', '..', '..', 'src'))
     ]
 
-    src_path = None
+    src_path_found = None
     for path in possible_src_paths:
         if os.path.exists(path):
-            src_path = os.path.abspath(path)
+            src_path_found = os.path.abspath(path)
             break
 
-    if src_path is None:
-        print("❌ ERROR: No se pudo encontrar el directorio 'src'")
-        return
-
-    project_root = os.path.dirname(src_path)
-
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
+    if src_path_found:
+        if src_path_found not in sys.path:
+            sys.path.insert(0, src_path_found)
+        project_root = os.path.dirname(src_path_found)
+    
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
 
@@ -77,7 +78,20 @@ def mainRequerimiento2_web():
         bibtex_path = find_bibtex_file()
         if not bibtex_path:
             print("\n❌ No se encontró archivo BibTeX unificado")
-            print("Ejecute primero el Requerimiento 1 para generar el archivo unificado")
+            print("💡 Para generar archivos BibTeX:")
+            print("   1. Descargue archivos .bib en modo consola local")
+            print("   2. O suba archivos .bib al directorio 'output/'")
+            print("   3. Luego ejecute 'Unificar y Filtrar Datos' desde el menú principal")
+            print("\n📁 Archivos .bib buscados en:")
+            output_dir = os.path.join(project_root, 'output')
+            if os.path.exists(output_dir):
+                bib_files = [f for f in os.listdir(output_dir) if f.endswith('.bib')]
+                if bib_files:
+                    print(f"   Encontrados {len(bib_files)} archivos .bib:")
+                    for f in bib_files:
+                        print(f"   - {f}")
+                else:
+                    print("   No se encontraron archivos .bib en output/")
             return
 
         print(f"\n📁 Archivo BibTeX encontrado: {os.path.basename(bibtex_path)}")
@@ -86,6 +100,7 @@ def mainRequerimiento2_web():
         abstracts = load_bibtex_abstracts(bibtex_path)
         if abstracts.empty:
             print("❌ No se pudieron cargar los abstracts")
+            print("💡 El archivo BibTeX puede estar vacío o no tener el formato correcto")
             return
 
         print(f"✅ Se cargaron {len(abstracts)} abstracts exitosamente")
@@ -93,6 +108,7 @@ def mainRequerimiento2_web():
         # Seleccionar automáticamente los primeros 2 artículos
         if len(abstracts) < 2:
             print("❌ Se necesitan al menos 2 artículos para el análisis")
+            print(f"💡 El archivo solo contiene {len(abstracts)} artículo(s)")
             return
 
         abstract1_data = {
@@ -137,6 +153,11 @@ def mainRequerimiento2_web():
         print("\n🎯 Análisis de similitud textual completado exitosamente")
         print("   Los resultados y gráficos están disponibles en la interfaz web")
 
+    except ImportError as e:
+        print(f"❌ Error importando módulos: {e}")
+        print("💡 Verifique que todas las dependencias estén instaladas")
+        import traceback
+        traceback.print_exc()
     except Exception as e:
         print(f"❌ Error en el análisis: {e}")
         import traceback
@@ -339,38 +360,91 @@ def ejecutarEjecutar_web():
         import traceback
         traceback.print_exc()
 
-# Importaciones del proyecto
-try:
-    print("Importando módulos del proyecto...")
-    from procesamiento.Requerimiento2.requerimiento2Ejecutable import mainRequerimiento2
-    print("✓ Requerimiento2 importado")
-    from procesamiento.Requerimiento3.FrecuenciaPalabra import mainEjecutableRequerimiento3
-    print("✓ Requerimiento3 importado")
-    from procesamiento.Requerimiento4.clutsteringDatos import mainRequerimiento4
-    print("✓ Requerimiento4 importado")
-    from procesamiento.Requerimiento5.requerimiento5Ejecutable import mainRequerimiento5
-    print("✓ Requerimiento5 importado")
-    from procesamiento.Seguimiento1.Punto1Seguimiento.mainSeguimiento1 import mainSeguimiento1
-    print("✓ Seguimiento1 Punto1 importado")
-    from procesamiento.Seguimiento1.punto3Seguimiento.mainSeguimientoPunto3 import seguimiento1Punto3
-    print("✓ Seguimiento1 Punto3 importado")
-    from procesamiento.Seguimiento2.Punto1.grafoDirigido import ejecutarGrafoDirigido
-    print("✓ Seguimiento2 Punto1 importado")
-    from procesamiento.Seguimiento2.punto2.ejecutar import ejecutarEjecutar
-    print("✓ Seguimiento2 Punto2 importado")
-    from extractores.analizador import mainAnalizador
-    print("✓ Analizador importado")
-    from procesamiento.unifyBibtext import unificar
-    print("✓ Unify importado")
-    from instalarJupyter import mainJupyter
-    print("✓ Jupyter importado")
-    IMPORTS_OK = True
+# Importaciones del proyecto - Importación individual para mejor diagnóstico
+print("=" * 80)
+print("🔍 Importando módulos del proyecto...")
+print("=" * 80)
+
+# Diccionario para almacenar los módulos importados y su estado
+IMPORTED_MODULES = {}
+IMPORTS_OK = True
+
+# Lista de módulos a importar con sus nombres para mensajes
+modules_to_import = [
+    ("procesamiento.Requerimiento2.requerimiento2Ejecutable", "mainRequerimiento2", "Requerimiento2"),
+    ("procesamiento.Requerimiento3.FrecuenciaPalabra", "mainEjecutableRequerimiento3", "Requerimiento3"),
+    ("procesamiento.Requerimiento4.clutsteringDatos", "mainRequerimiento4", "Requerimiento4"),
+    ("procesamiento.Requerimiento5.requerimiento5Ejecutable", "mainRequerimiento5", "Requerimiento5"),
+    ("procesamiento.Seguimiento1.Punto1Seguimiento.mainSeguimiento1", "mainSeguimiento1", "Seguimiento1 Punto1"),
+    ("procesamiento.Seguimiento1.punto3Seguimiento.mainSeguimientoPunto3", "seguimiento1Punto3", "Seguimiento1 Punto3"),
+    ("procesamiento.Seguimiento2.Punto1.grafoDirigido", "ejecutarGrafoDirigido", "Seguimiento2 Punto1"),
+    ("procesamiento.Seguimiento2.punto2.ejecutar", "ejecutarEjecutar", "Seguimiento2 Punto2"),
+    ("extractores.analizador", "mainAnalizador", "Analizador"),
+    ("procesamiento.unifyBibtext", "unificar", "Unify"),
+    ("instalarJupyter", "mainJupyter", "Jupyter"),
+]
+
+# Importar cada módulo individualmente
+# Módulos opcionales que no afectan IMPORTS_OK si fallan
+optional_modules = {"mainJupyter"}  # Jupyter es opcional para versión web
+
+for module_path, function_name, display_name in modules_to_import:
+    try:
+        module = __import__(module_path, fromlist=[function_name])
+        function = getattr(module, function_name)
+        IMPORTED_MODULES[function_name] = function
+        if function_name in optional_modules:
+            print(f"✅ {display_name} importado correctamente (opcional)")
+        else:
+            print(f"✅ {display_name} importado correctamente")
+    except ImportError as e:
+        if function_name in optional_modules:
+            print(f"⚠️ {display_name} no disponible (opcional - solo en modo consola): {e}")
+        else:
+            print(f"❌ Error importando {display_name}: {e}")
+        IMPORTED_MODULES[function_name] = None
+        # Solo marcar como error si no es un módulo opcional
+        if function_name not in optional_modules:
+            IMPORTS_OK = False
+        # No salir, continuar con los demás módulos
+    except Exception as e:
+        if function_name in optional_modules:
+            print(f"⚠️ {display_name} no disponible (opcional): {e}")
+        else:
+            print(f"⚠️ Error inesperado importando {display_name}: {e}")
+            import traceback
+            traceback.print_exc()
+        IMPORTED_MODULES[function_name] = None
+        # Solo marcar como error si no es un módulo opcional
+        if function_name not in optional_modules:
+            IMPORTS_OK = False
+
+print("=" * 80)
+if IMPORTS_OK:
     print("✅ Todos los módulos importados correctamente")
-except ImportError as e:
-    print(f"❌ Error importando módulos: {e}")
-    import traceback
-    traceback.print_exc()
-    IMPORTS_OK = False
+else:
+    print("⚠️ Algunos módulos no se pudieron importar. La aplicación puede tener funcionalidad limitada.")
+    print("💡 Verifique que todas las dependencias estén instaladas correctamente.")
+print("=" * 80)
+
+# Crear funciones stub para módulos no disponibles
+def create_stub_function(name):
+    def stub(*args, **kwargs):
+        raise ImportError(f"El módulo {name} no está disponible. Verifique la instalación.")
+    return stub
+
+# Asignar funciones importadas o stubs a variables globales
+mainRequerimiento2 = IMPORTED_MODULES.get("mainRequerimiento2") or create_stub_function("Requerimiento2")
+mainEjecutableRequerimiento3 = IMPORTED_MODULES.get("mainEjecutableRequerimiento3") or create_stub_function("Requerimiento3")
+mainRequerimiento4 = IMPORTED_MODULES.get("mainRequerimiento4") or create_stub_function("Requerimiento4")
+mainRequerimiento5 = IMPORTED_MODULES.get("mainRequerimiento5") or create_stub_function("Requerimiento5")
+mainSeguimiento1 = IMPORTED_MODULES.get("mainSeguimiento1") or create_stub_function("Seguimiento1")
+seguimiento1Punto3 = IMPORTED_MODULES.get("seguimiento1Punto3") or create_stub_function("Seguimiento1 Punto3")
+ejecutarGrafoDirigido = IMPORTED_MODULES.get("ejecutarGrafoDirigido") or create_stub_function("Seguimiento2 Punto1")
+ejecutarEjecutar = IMPORTED_MODULES.get("ejecutarEjecutar") or create_stub_function("Seguimiento2 Punto2")
+mainAnalizador = IMPORTED_MODULES.get("mainAnalizador") or create_stub_function("Analizador")
+unificar = IMPORTED_MODULES.get("unificar") or create_stub_function("Unify")
+mainJupyter = IMPORTED_MODULES.get("mainJupyter") or create_stub_function("Jupyter")
 
 app = Flask(__name__)
 app.secret_key = 'bibliometric-analysis-secret-key'
@@ -512,7 +586,7 @@ MAIN_TEMPLATE = """
 
         {% if data_status == 'no_data' %}
         <div class="status" style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7;">
-            ⚠️ No hay datos bibliográficos. Ejecute "Descargar y Unificar Datos" primero.
+            ⚠️ No hay datos bibliográficos unificados. Puede unificar archivos BibTeX existentes usando la opción "Unificar y Filtrar Datos", o descargar nuevos datos en modo consola local.
         </div>
         {% endif %}
 
@@ -532,15 +606,29 @@ MAIN_TEMPLATE = """
         {% endwith %}
 
         <div class="menu-grid">
+            <div class="menu-item" style="opacity: 0.6; position: relative;">
+                <div style="position: absolute; top: 10px; right: 10px; background: #ffc107; color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; font-weight: bold;">
+                    ⚠️ NO DISPONIBLE EN WEB
+                </div>
+                <h3><span class="number">1</span>Descargar Documentos</h3>
+                <p><strong style="color: #dc3545;">⚠️ La descarga de documentos no está disponible en la versión web.</strong><br>
+                La descarga de documentos requiere Selenium y ChromeDriver, que no están disponibles en el despliegue web por limitaciones de recursos.<br>
+                <strong>💡 Solución:</strong> Use el modo consola local ejecutando <code>python main.py</code> o <code>python llamados.py</code> con <code>requirements-full.txt</code> instalado.</p>
+                <button class="btn" style="background: #6c757d; cursor: not-allowed;" disabled>🚫 No Disponible en Web</button>
+            </div>
+
             <div class="menu-item">
-                <h3><span class="number">1</span>Descargar y Unificar Datos</h3>
-                <p>Descarga automáticamente artículos de IEEE y ScienceDirect, luego unifica y limpia los datos BibTeX.</p>
-                <a href="/download_unify" class="btn">🚀 Configurar y Ejecutar</a>
+                <h3><span class="number">1b</span>Unificar y Filtrar Datos</h3>
+                <p>Unifica y filtra archivos BibTeX ya descargados. Esta funcionalidad está disponible en la versión web.</p>
+                <form method="post" action="/execute">
+                    <input type="hidden" name="action" value="unify_only">
+                    <button type="submit" class="btn">🔄 Unificar Archivos</button>
+                </form>
             </div>
 
             <div class="menu-item">
                 <h3><span class="number">2</span>Herramientas de Análisis</h3>
-                <p>Jupyter Notebook para análisis detallado o script interactivo de similitud textual.</p>
+                <p>Análisis de similitud textual (disponible) y Jupyter Notebook (solo modo consola).</p>
                 <a href="/analysis_tools" class="btn">🔬 Acceder</a>
             </div>
 
@@ -577,7 +665,7 @@ MAIN_TEMPLATE = """
 
         <div style="text-align: center; margin-top: 40px;">
             <p style="color: white; opacity: 0.8;">
-                🚀 Desarrollado para el análisis bibliométrico de la Universidad del Quindío
+                Desarrollado para Analisis de Algoritmos por Miguel Montenegro, Nicolas Peña y jose Taborda
             </p>
         </div>
     </div>
@@ -597,10 +685,14 @@ ANALYSIS_TOOLS_TEMPLATE = """
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header { text-align: center; margin-bottom: 30px; }
         .option { background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #667eea; }
+        .option.disabled { opacity: 0.6; border-left-color: #6c757d; background: #e9ecef; }
+        .warning-badge { background: #ffc107; color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.9em; font-weight: bold; display: inline-block; margin-bottom: 10px; }
         .btn { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin: 5px; }
         .btn:hover { background: #5a6fd8; }
+        .btn:disabled { background: #6c757d; cursor: not-allowed; opacity: 0.6; }
         .btn-secondary { background: #6c757d; }
         .btn-secondary:hover { background: #5a6268; }
+        .alert-warning { background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 15px; border-radius: 5px; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -610,21 +702,28 @@ ANALYSIS_TOOLS_TEMPLATE = """
             <p>Selecciona la herramienta que mejor se adapte a tus necesidades</p>
         </div>
 
-        <div class="option">
+        <div class="option disabled">
+            <span class="warning-badge">⚠️ NO DISPONIBLE EN VERSIÓN WEB</span>
             <h3>📓 Jupyter Notebook</h3>
-            <p>Entorno interactivo completo con explicaciones detalladas paso a paso. Ideal para aprendizaje y análisis profundo.</p>
-            <p><strong>Características:</strong> Celdas ejecutables, gráficos interactivos, documentación integrada</p>
-            <form method="post" action="/execute">
-                <input type="hidden" name="action" value="jupyter">
-                <button type="submit" class="btn">🚀 Abrir Jupyter</button>
-            </form>
+            <div class="alert-warning">
+                <strong>⚠️ Esta funcionalidad no está disponible en la versión web.</strong><br>
+                Jupyter Notebook y sus dependencias (jupyter, ipykernel, etc.) son demasiado pesadas para el despliegue web en Render.<br>
+                <strong>💡 Solución:</strong> Para usar Jupyter Notebook, ejecute el proyecto en modo consola local:
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Instale las dependencias completas: <code>pip install -r requirements-full.txt</code></li>
+                    <li>Ejecute el proyecto: <code>python main.py</code> o <code>python llamados.py</code></li>
+                    <li>Seleccione la opción de Jupyter Notebook desde el menú</li>
+                </ul>
+            </div>
+            <button type="button" class="btn" disabled>🚫 No Disponible en Web</button>
         </div>
 
         <div class="option">
-            <h3>🎯 Análisis de Similitud Textual</h3>
+            <h3>🎯 Análisis de Similitud Textual (Script)</h3>
             <p>Análisis automático que compara el primer y último documento usando 6 algoritmos de similitud.</p>
             <p><strong>Algoritmos:</strong> Levenshtein, Jaccard, Jaro-Winkler, TF-IDF+Coseno, BERT, Sentence-BERT</p>
             <p><strong>Comparación:</strong> Primer documento vs Último documento (automático)</p>
+            <p><strong>✅ Disponible en versión web</strong></p>
             <form method="post" action="/execute">
                 <input type="hidden" name="action" value="similarity_analysis">
                 <button type="submit" class="btn">📊 Ejecutar Análisis</button>
@@ -635,6 +734,7 @@ ANALYSIS_TOOLS_TEMPLATE = """
             <h3>🔍 Análisis de Similitud Personalizado</h3>
             <p>Selecciona manualmente dos artículos específicos para comparar usando todos los algoritmos de similitud.</p>
             <p><strong>Características:</strong> Selección personalizada de artículos, comparación detallada</p>
+            <p><strong>✅ Disponible en versión web</strong></p>
             <a href="/similarity_custom" class="btn">🎛️ Configurar Análisis</a>
         </div>
 
@@ -1291,17 +1391,20 @@ def run_function_in_thread(func, *args, **kwargs):
 
 @app.route('/')
 def index():
-    if not IMPORTS_OK:
-        status = 'error'
-        data_status = 'error'
-    else:
+    # Determinar el estado basado en si hay módulos disponibles
+    if IMPORTS_OK:
         status = 'ready'
-        # Verificar si hay datos disponibles
-        output_dir = os.path.join(project_root, 'output')
-        bib_files = []
-        if os.path.exists(output_dir):
-            bib_files = [f for f in os.listdir(output_dir) if f.endswith('.bib')]
-        data_status = 'ready' if bib_files else 'no_data'
+    elif any(IMPORTED_MODULES.values()):  # Si al menos algunos módulos están disponibles
+        status = 'ready'  # Permitir que funcione con módulos parciales
+    else:
+        status = 'error'
+    
+    # Verificar si hay datos disponibles
+    output_dir = os.path.join(project_root, 'output')
+    bib_files = []
+    if os.path.exists(output_dir):
+        bib_files = [f for f in os.listdir(output_dir) if f.endswith('.bib')]
+    data_status = 'ready' if bib_files else 'no_data'
 
     return render_template_string(MAIN_TEMPLATE, status=status, data_status=data_status)
 
@@ -1312,6 +1415,9 @@ def analysis_tools():
 @app.route('/similarity_custom')
 def similarity_custom():
     # Cargar artículos disponibles
+    articles = []
+    error_message = None
+    
     try:
         from procesamiento.Requerimiento2.requerimiento2Ejecutable import find_bibtex_file, load_bibtex_abstracts
 
@@ -1322,7 +1428,6 @@ def similarity_custom():
                 # Limitar a primeros 100 artículos para mejor rendimiento
                 articles_df = articles_df[:100] if len(articles_df) > 100 else articles_df
                 # Convertir DataFrame a lista de diccionarios para el template
-                articles = []
                 for _, row in articles_df.iterrows():
                     articles.append({
                         'id': str(row['id']),
@@ -1332,12 +1437,53 @@ def similarity_custom():
                         'abstract': str(row.get('abstract', ''))
                     })
             else:
-                articles = []
+                error_message = "El archivo BibTeX está vacío o no contiene artículos válidos."
         else:
-            articles = []
-    except Exception as e:
+            error_message = "No se encontró archivo BibTeX unificado. Ejecute 'Unificar y Filtrar Datos' primero o suba archivos .bib al directorio output/."
+    except ImportError as e:
+        error_message = f"Error importando módulos: {e}. Verifique que todas las dependencias estén instaladas."
         print(f"Error cargando artículos: {e}")
-        articles = []
+    except Exception as e:
+        error_message = f"Error cargando artículos: {e}"
+        print(f"Error cargando artículos: {e}")
+        import traceback
+        traceback.print_exc()
+
+    # Si hay error, mostrar mensaje en el template
+    if error_message and not articles:
+        return render_template_string("""
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Error - Análisis de Similitud</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+                .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 20px; border-radius: 5px; margin: 20px 0; }
+                .btn { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin: 5px; }
+                .btn:hover { background: #5a6fd8; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>❌ Error al Cargar Artículos</h1>
+                <div class="error">
+                    <strong>Error:</strong> {{ error_message }}
+                </div>
+                <p><strong>💡 Soluciones:</strong></p>
+                <ul>
+                    <li>Ejecute "Unificar y Filtrar Datos" desde el menú principal para generar archivos BibTeX unificados</li>
+                    <li>O suba archivos .bib manualmente al directorio output/</li>
+                    <li>Verifique que los archivos .bib tengan el formato correcto</li>
+                </ul>
+                <a href="/" class="btn">⬅️ Volver al Menú Principal</a>
+                <a href="/analysis_tools" class="btn">🔬 Volver a Herramientas</a>
+            </div>
+        </body>
+        </html>
+        """, error_message=error_message)
 
     return render_template_string(SIMILARITY_CUSTOM_TEMPLATE, articles=articles)
 
@@ -1423,17 +1569,49 @@ def additional_analysis():
 def execute():
     action = request.form.get('action')
 
-    if not IMPORTS_OK:
-        flash('Error: Los módulos del proyecto no están disponibles. Verifique la instalación.', 'error')
+    # Verificar si el módulo específico está disponible en lugar de verificar todos
+    # Nota: similarity_analysis y similarity_custom usan funciones definidas directamente en web_app.py
+    # por lo que no dependen de la importación de mainRequerimiento2
+    module_availability = {
+        'jupyter': IMPORTED_MODULES.get('mainJupyter') is not None,
+        'unify_only': IMPORTED_MODULES.get('unificar') is not None,  # Unificación disponible
+        'similarity_analysis': True,  # Siempre disponible (usa funciones locales)
+        'category_analysis': IMPORTED_MODULES.get('mainEjecutableRequerimiento3') is not None,
+        'clustering': IMPORTED_MODULES.get('mainRequerimiento4') is not None,
+        'visualizations_random': IMPORTED_MODULES.get('mainAnalizador') is not None,
+        'visualizations_existing': IMPORTED_MODULES.get('mainRequerimiento5') is not None,
+        'seguimiento1_p1': IMPORTED_MODULES.get('mainSeguimiento1') is not None,
+        'seguimiento1_p3': IMPORTED_MODULES.get('seguimiento1Punto3') is not None,
+        'seguimiento2_p1': IMPORTED_MODULES.get('ejecutarGrafoDirigido') is not None,
+        'seguimiento2_p2': IMPORTED_MODULES.get('ejecutarEjecutar') is not None,
+        'article_analyzer': IMPORTED_MODULES.get('mainAnalizador') is not None,
+    }
+    
+    # Verificar si el módulo requerido está disponible (unify_only y similarity_analysis se manejan después)
+    if action not in ['unify_only', 'similarity_analysis'] and action in module_availability and not module_availability[action]:
+        flash(f'Error: El módulo requerido para "{action}" no está disponible. Verifique los logs del contenedor Docker para más detalles sobre qué módulos faltan.', 'error')
         return redirect(url_for('index'))
 
     try:
         execution_id = f"{action}_{int(time.time())}"
 
         if action == 'jupyter':
-            flash('📓 Iniciando Jupyter Notebook...', 'success')
-            run_function_in_thread(mainJupyter)
+            flash('⚠️ Jupyter Notebook no está disponible en la versión web. Use el modo consola local ejecutando: python main.py con requirements-full.txt instalado.', 'error')
             return redirect(url_for('index'))
+
+        elif action == 'unify_only':
+            # Solo unificar archivos (sin descargar)
+            flash('🔄 Unificando y filtrando archivos BibTeX...', 'success')
+            
+            def unify_process():
+                """Proceso de unificación sin descarga"""
+                from procesamiento.unifyBibtext import unificar
+                print("Unificando y filtrando archivos BibTeX...")
+                unificar()
+                print("Proceso completado. Archivos unificados y duplicados guardados en 'output/'.")
+            
+            run_function_with_capture(unify_process, execution_id)
+            return redirect(url_for('results', execution_id=execution_id))
 
         elif action == 'similarity_analysis':
             flash('🎯 Ejecutando análisis de similitud textual (Primer vs Último documento)...', 'success')
@@ -1492,10 +1670,6 @@ def execute():
 
 @app.route('/execute_similarity_custom', methods=['POST'])
 def execute_similarity_custom():
-    if not IMPORTS_OK:
-        flash('Error: Los módulos del proyecto no están disponibles. Verifique la instalación.', 'error')
-        return redirect(url_for('similarity_custom'))
-
     try:
         article1_id = request.form.get('article1_id')
         article2_id = request.form.get('article2_id')
@@ -1639,53 +1813,16 @@ def execute_similarity_custom():
 
 @app.route('/download_unify')
 def download_unify():
-    return render_template_string(DOWNLOAD_UNIFY_TEMPLATE)
+    # Redirigir con mensaje de error - solo descarga no disponible en web
+    # La unificación está disponible desde el menú principal
+    flash('⚠️ La descarga de documentos no está disponible en la versión web. Use el modo consola local con requirements-full.txt instalado. La unificación de archivos está disponible desde el menú principal (opción 1b).', 'error')
+    return redirect(url_for('index'))
 
 @app.route('/execute_download_unify', methods=['POST'])
 def execute_download_unify():
-    if not IMPORTS_OK:
-        flash('Error: Los módulos del proyecto no están disponibles. Verifique la instalación.', 'error')
-        return redirect(url_for('download_unify'))
-
-    try:
-        num_ieee = int(request.form.get('num_ieee', 0))
-        num_science = int(request.form.get('num_science', 0))
-
-        # Crear ID único para esta ejecución
-        execution_id = f"download_unify_{int(time.time())}"
-
-        # Importar las funciones necesarias
-        from extractores.ieee_extractor import scrape_IEE
-        from extractores.sciencedirect_extractor import science_test_debug
-        from procesamiento.unifyBibtext import unificar
-
-        def download_and_unify_process():
-            """Proceso completo de descarga y unificación"""
-            print(f"Descargando {num_ieee if num_ieee > 0 else 'todas'} páginas de IEEE...")
-            scrape_IEE(max_pages=num_ieee if num_ieee > 0 else None)
-
-            import time
-            time.sleep(5)  # Pausa para cerrar Chrome
-
-            print(f"Descargando {num_science if num_science > 0 else 'todas'} páginas de ScienceDirect...")
-            try:
-                science_test_debug(max_pages=num_science if num_science > 0 else None)
-            except Exception as e:
-                print(f"❌ Error al descargar de ScienceDirect: {e}")
-                print("💡 Posible solución: Actualizar ChromeDriver o verificar que Chrome esté actualizado")
-
-            print("Unificando y filtrando archivos...")
-            unificar()
-            print("Proceso completado. Archivos unificados y duplicados guardados en 'output/'.")
-
-        flash('🚀 Iniciando descarga y unificación de datos...', 'success')
-        run_function_with_capture(download_and_unify_process, execution_id)
-
-        return redirect(url_for('results', execution_id=execution_id))
-
-    except Exception as e:
-        flash(f'❌ Error iniciando proceso: {str(e)}', 'error')
-        return redirect(url_for('download_unify'))
+    # Funcionalidad deshabilitada en versión web
+    flash('⚠️ La descarga de documentos no está disponible en la versión web. Esta funcionalidad requiere Selenium y ChromeDriver que no están disponibles en el despliegue web. Use el modo consola local ejecutando: python main.py con requirements-full.txt instalado.', 'error')
+    return redirect(url_for('index'))
 
 @app.route('/seguimiento2_p2_config')
 def seguimiento2_p2_config():
@@ -1693,8 +1830,8 @@ def seguimiento2_p2_config():
 
 @app.route('/execute_seguimiento2_p2', methods=['POST'])
 def execute_seguimiento2_p2():
-    if not IMPORTS_OK:
-        flash('Error: Los módulos del proyecto no están disponibles. Verifique la instalación.', 'error')
+    if IMPORTED_MODULES.get('ejecutarEjecutar') is None:
+        flash('Error: El módulo de Seguimiento 2 Punto 2 no está disponible. Verifique los logs del contenedor Docker.', 'error')
         return redirect(url_for('seguimiento2_p2_config'))
 
     try:
@@ -1867,13 +2004,21 @@ def test():
     if os.path.exists(output_dir):
         bib_files = [f for f in os.listdir(output_dir) if f.endswith('.bib')]
 
+    # Crear lista de módulos disponibles y faltantes
+    available_modules = [name for name, func in IMPORTED_MODULES.items() if func is not None]
+    missing_modules = [name for name, func in IMPORTED_MODULES.items() if func is None]
+
     return {
         'status': 'ok',
         'imports_ok': IMPORTS_OK,
+        'available_modules': available_modules,
+        'missing_modules': missing_modules,
         'bib_files': bib_files,
         'temp_dir': TEMP_RESULTS_DIR,
         'output_dir': output_dir,
-        'project_root': project_root
+        'project_root': project_root,
+        'pythonpath': os.environ.get('PYTHONPATH', 'No definido'),
+        'sys_path': sys.path[:5]  # Primeros 5 elementos de sys.path
     }
 
 if __name__ == '__main__':

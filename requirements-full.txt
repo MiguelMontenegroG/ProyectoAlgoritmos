@@ -1,0 +1,28 @@
+# Dependencias completas del proyecto (incluyendo Selenium y Jupyter)
+# =====================================================================
+# USAR ESTE ARCHIVO PARA MODO CONSOLA LOCAL
+# Para despliegue web, usar requirements.txt (más liviano)
+# =====================================================================
+
+# Incluir todas las dependencias base primero
+-r requirements.txt
+
+# =====================================================================
+# DEPENDENCIAS ADICIONALES PARA MODO CONSOLA
+# =====================================================================
+
+# Web scraping (requiere Chrome/ChromeDriver)
+# Solo disponible en modo consola local
+selenium>=4.0.0
+
+# Jupyter Notebook (muy pesado para despliegue web)
+# Solo disponible en modo consola local
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# =====================================================================
+# NOTAS:
+# - Estas dependencias NO se instalan en la versión web
+# - Son necesarias para: descarga de documentos y Jupyter Notebook
+# - Para usar estas funcionalidades, ejecute: pip install -r requirements-full.txt
+# =====================================================================

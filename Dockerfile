@@ -4,30 +4,16 @@ FROM python:3.11-slim
 # Establecer directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema
+# Instalar dependencias del sistema (mínimas para versión web)
 RUN apt-get update && apt-get install -y \
-    wget \
     curl \
-    gnupg \
-    unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar Google Chrome (última versión estable disponible)
-RUN mkdir -p /etc/apt/keyrings \
-    && wget -q -O /etc/apt/keyrings/google-linux-signing-key.gpg https://dl.google.com/linux/linux_signing_key.pub \
-    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-linux-signing-key.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
-
-# Instalar ChromeDriver compatible automáticamente
-RUN CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+(\.[0-9]+)+') \
-    && CHROMEDRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION%%.*}") \
-    && wget -q -O /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip" \
-    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
-    && mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/ \
-    && chmod +x /usr/local/bin/chromedriver \
-    && rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
+# NOTA: Chrome y ChromeDriver NO se instalan en la versión web para reducir el tamaño
+# Estas dependencias solo están disponibles en modo consola con requirements-full.txt
+# Si necesita descargar documentos, use el modo consola local:
+#   pip install -r requirements-full.txt
+#   python main.py
 
 # Copiar los archivos principales
 COPY requirements.txt . 
@@ -50,12 +36,27 @@ COPY . .
 # Crear directorios necesarios
 RUN mkdir -p output logs
 
+# Crear script de inicio que verifica e instala dependencias si es necesario
+RUN echo '#!/bin/bash' > /entrypoint.sh && \
+    echo 'set -e' >> /entrypoint.sh && \
+    echo 'echo "🔍 Verificando dependencias..."' >> /entrypoint.sh && \
+    echo 'if [ -f "procesamiento/install_dependencies.py" ]; then' >> /entrypoint.sh && \
+    echo '    python procesamiento/install_dependencies.py || echo "⚠️ Algunas dependencias opcionales pueden no estar disponibles"' >> /entrypoint.sh && \
+    echo 'fi' >> /entrypoint.sh && \
+    echo 'echo "🚀 Iniciando aplicación..."' >> /entrypoint.sh && \
+    echo 'exec "$@"' >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
 # Establecer variables de entorno
-ENV PYTHONPATH=/app
-ENV DISPLAY=:99
+ENV PYTHONPATH=/app:/app/src
+# DISPLAY no es necesario sin Chrome
+# ENV DISPLAY=:99
 
 # Exponer puerto (para interfaz web o API)
 EXPOSE 8000
+
+# Usar el script de entrada
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Comando por defecto
 CMD ["python", "web_app.py"]
